@@ -1,0 +1,5 @@
+@font-face {
+    font-family: 'East Sea'; /* Имя шрифта */
+    src: url("./east-sea-dokdo-cyrillic.otf"); /* Путь к файлу со шрифтом */
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
