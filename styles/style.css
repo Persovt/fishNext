@@ -1,25 +1,37 @@
-
-
 body {
   margin: 0;
- 
-  
+
   font-family: "Roboto";
-  background-color: #D0E6F4;
+  background-color: #d0e6f4;
 }
-.tank{
-  font-family: 'Noto Color Emoji';
+.tank {
+  font-family: "fishFonts";
   position: absolute;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+.school {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.fish {
+  position: absolute;
 }
 .welcome {
   background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1197275/oceanBackdrop.jpg);
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  
+  background-size: cover;
   position: relative;
   display: flex;
   justify-content: center;
@@ -27,7 +39,7 @@ body {
   flex-direction: column;
   margin-bottom: 25px;
 }
-.next-block{
+.next-block {
   margin-top: auto;
   margin-bottom: 5%;
   cursor: pointer;
@@ -35,21 +47,20 @@ body {
   animation: jump 1s alternate infinite;
 }
 @keyframes jump {
-  0%{
+  0% {
     margin-bottom: 5%;
   }
-  100%{
+  100% {
     margin-bottom: 5.5%;
   }
 }
-.arrow{
+.arrow {
   text-transform: uppercase;
   position: relative;
   color: white;
-  
 }
-.arrow::before{
-  content: '';
+.arrow::before {
+  content: "";
   position: absolute;
   width: 50%;
   height: 2px;
@@ -58,8 +69,8 @@ body {
   left: 3px;
   transform: rotate(45deg);
 }
-.arrow::after{
-  content: '';
+.arrow::after {
+  content: "";
   position: absolute;
   width: 50%;
   height: 2px;
@@ -70,10 +81,10 @@ body {
 }
 .header .wrapper {
 }
-.welcome__list{
+.welcome__list {
   list-style: none;
 }
-.welcome__item{
+.welcome__item {
   color: white;
   font-size: 2em;
   background: rgb(0, 212, 255);
@@ -86,21 +97,20 @@ body {
   display: flex;
   box-sizing: content-box;
   position: relative;
-  
 }
-.welcome__item:hover{
+.welcome__item:hover {
   height: 60px;
   width: 355px;
   margin: 30px 0;
 }
-.welcome__item:first-child{
+.welcome__item:first-child {
   margin-top: 0;
 }
-.welcome__item:last-child{
+.welcome__item:last-child {
   margin-bottom: 0;
 }
-.welcome__item::before{
-  content: '';
+.welcome__item::before {
+  content: "";
   position: absolute;
   right: -25px;
   height: 100%;
@@ -157,24 +167,23 @@ body {
   height: 100%;
   object-fit: cover;
 }
-.logo__title{
+.logo__title {
   font-family: "East Sea";
   font-size: 4em;
   color: white;
 }
-.header{
+.header {
   background-color: #387298;
   display: flex;
-  
 }
 
-.logo{
+.logo {
   display: flex;
   align-items: center;
 }
 .welcome__title {
   margin: 0;
- 
+
   font-family: "East Sea";
   font-size: 8em;
   position: relative;
@@ -188,11 +197,11 @@ body {
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
 }
 .welcome__content {
-  background: rgba(56,114,152, 0.7);
+  background: rgba(56, 114, 152, 0.7);
   border-radius: 50%;
+  box-shadow: 0px -2px 10px white;
   width: 50em;
   height: 50em;
   z-index: 100;
@@ -229,9 +238,8 @@ body {
 .about__img {
   margin: 0 auto;
   width: 65%;
-  
+
   border-radius: 10px;
- 
 }
 
 .btn__buy:hover {

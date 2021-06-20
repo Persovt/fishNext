@@ -3,7 +3,7 @@
     src: url("./east-sea-dokdo-cyrillic.otf"); /* Путь к файлу со шрифтом */
   }
   @font-face {
-    font-family: 'Noto Color Emoji'; /* Имя шрифта */
-    src: url("./NotoColorEmoji.ttf"); /* Путь к файлу со шрифтом */
+    font-family: 'fishFonts'; /* Имя шрифта */
+    src: url("./fishFont.ttf"); /* Путь к файлу со шрифтом */
   }
   @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
