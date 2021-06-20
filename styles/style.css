@@ -2,10 +2,13 @@
 
 body {
   margin: 0;
+ 
+  
   font-family: "Roboto";
   background-color: #D0E6F4;
 }
 .tank{
+  font-family: 'Noto Color Emoji';
   position: absolute;
     overflow: hidden;
     width: 100%;
