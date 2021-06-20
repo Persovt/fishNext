@@ -14,13 +14,14 @@ export default function Home() {
   
   useEffect(() => {
     setNode(mainBlock.current)
-    TankFishJs(tankRef.current);
-    
-  }, []);
+    // TankFishJs(tankRef.current);
+    console.log(mainBlock.current)
+  }, [mainBlock]);
   // useEffect(() => {
    
   //   TankFishJs(tankRef.current);
   // }, [tankRef]);
+  let test = null
   return (
     <div className="container" ref={mainBlock}>
       <Head>
@@ -35,7 +36,7 @@ export default function Home() {
       
 
       <section className="welcome">
-        <div className="tank" ref={tankRef}></div>
+        <div className="tank" ref={(ref: any) => {TankFishJs(ref)}}></div>
         <div className="welcome__content">
           <h1 className="welcome__title">FEOFISH</h1>
           <Image

@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-const createPathComponent = ({node}: {
-    node: HTMLElement | null
-}) => {
-  const [currect, setCurrect] = useState(0);
-  const [maxHeight, setMaxHeight] = useState(0);
-  const [svgHeight, setSvgHeight] = useState(0);
-  const [path, setPath] = useState("");
-  const createPath = (
+const createPath = (
     ciricle: NodeListOf<HTMLElement>,
     section: NodeListOf<HTMLElement>
   ): string => {
@@ -30,8 +23,18 @@ const createPathComponent = ({node}: {
     });
     return createPath;
   };
-  useEffect(() => {
+
+const createPathComponent = ({node}: {
+    node: HTMLElement | null
+}) => {
     
+  const [currect, setCurrect] = useState(0);
+  const [maxHeight, setMaxHeight] = useState(0);
+  const [svgHeight, setSvgHeight] = useState(0);
+  const [path, setPath] = useState("");
+  
+  useEffect(() => {
+    console.log(node)
     if (node) {
       
       const ciricle: NodeListOf<HTMLElement> =
@@ -54,7 +57,7 @@ const createPathComponent = ({node}: {
       });
       setPath(createPath(ciricle, section));
     }
-  }, []);
+  }, [node]);
 
   return (
     <>

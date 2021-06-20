@@ -1,4 +1,3 @@
-import { AnyRecordWithTtl } from "dns";
 import { ElementRef } from "react";
 
 function tank(tank: any) {
@@ -12,17 +11,16 @@ function tank(tank: any) {
   generateControls();
   initializeTank();
 
-//   window.addEventListener("resize", () => {
-//     initializeTank();
-//   });
-
-  
+  //   window.addEventListener("resize", () => {
+  //     initializeTank();
+  //   });
 
   /*Fish functions*/
   function initializeTank() {
-    WINDOW_MIN = Math.min(tank.clientHeight, tank.clientWidth);
-    generateFishTank();
-    
+    if (tank) {
+      WINDOW_MIN = Math.min(tank.clientHeight, tank.clientWidth);
+      generateFishTank();
+    }
   }
 
   function generateFishTank() {
@@ -146,10 +144,9 @@ function tank(tank: any) {
   }
 
   /*DAT.GUI表示*/
-  
 
   function generateControls() {
-    myoptions = {}
+    myoptions = {};
     myoptions.Presets = "Ocean Mix";
     myoptions.NumFishGroups = "20";
     myoptions.SingleFishOnly = false;
@@ -158,14 +155,12 @@ function tank(tank: any) {
     myoptions.PercentSchools = "25";
     myoptions.SwimSpeed = "Moderate";
     myoptions.FishSpecies = "🐟 🐠 🐡";
-
   }
 
   function setValue() {
     generateFishTank();
   }
 
-  
   /*END GUI表示*/
 
   /*HELPERS*/
@@ -200,8 +195,6 @@ function tank(tank: any) {
     }
     timeouts = [];
   }
-
-  
 
   function isSquid(letter: string) {
     return /[\u{1f991}\u{1f419}]/u.test(letter);
