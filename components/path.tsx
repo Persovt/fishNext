@@ -1,42 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createRef, forwardRef } from "react";
 const createPath = (
-    ciricle: NodeListOf<HTMLElement>,
-    section: NodeListOf<HTMLElement>
-  ): string => {
-    let createPath: string = "";
-    ciricle.forEach((item: HTMLElement, index: number) => {
-      if (index != ciricle.length - 1) {
-        createPath += `M${Math.trunc(
-          item.offsetLeft + item.offsetWidth / 2
-        )} ${Math.trunc(item.offsetTop + item.offsetHeight / 2)}Q ${Math.trunc(
-          item.offsetLeft + item.offsetWidth / 2
-        )} ${
-          section[index].offsetTop + section[index].offsetHeight
-        } ${Math.trunc(section[index].offsetWidth / 2)} ${Math.trunc(
-          section[index].offsetTop + section[index].offsetHeight
-        )}T${Math.trunc(
-          ciricle[index + 1].offsetLeft + ciricle[index + 1].offsetWidth / 2
-        )} ${Math.trunc(
-          ciricle[index + 1].offsetTop + ciricle[index + 1].offsetHeight / 2
-        )}`;
-      }
-    });
-    return createPath;
-  };
+  ciricle: NodeListOf<HTMLElement>,
+  section: NodeListOf<HTMLElement>
+): string => {
+  let createPath: string = "";
+  ciricle.forEach((item: HTMLElement, index: number) => {
+    if (index != ciricle.length - 1) {
+      createPath += `M${Math.trunc(
+        item.offsetLeft + item.offsetWidth / 2
+      )} ${Math.trunc(item.offsetTop + item.offsetHeight / 2)}Q ${Math.trunc(
+        item.offsetLeft + item.offsetWidth / 2
+      )} ${section[index].offsetTop + section[index].offsetHeight} ${Math.trunc(
+        section[index].offsetWidth / 2
+      )} ${Math.trunc(
+        section[index].offsetTop + section[index].offsetHeight
+      )}T${Math.trunc(
+        ciricle[index + 1].offsetLeft + ciricle[index + 1].offsetWidth / 2
+      )} ${Math.trunc(
+        ciricle[index + 1].offsetTop + ciricle[index + 1].offsetHeight / 2
+      )}`;
+    }
+  });
+  return createPath;
+};
 
-const createPathComponent = ({node}: {
-    node: HTMLElement | null
-}) => {
-    
+const createPathComponent = () => {
   const [currect, setCurrect] = useState(0);
   const [maxHeight, setMaxHeight] = useState(0);
   const [svgHeight, setSvgHeight] = useState(0);
+  const [node, setNode] = useState<HTMLElement | null>(null);
   const [path, setPath] = useState("");
-  
+
   useEffect(() => {
-    console.log(node)
+    console.log(node);
     if (node) {
-      
       const ciricle: NodeListOf<HTMLElement> =
         node.querySelectorAll(".ciricle");
       const section: NodeListOf<HTMLElement> =
@@ -67,7 +64,9 @@ const createPathComponent = ({node}: {
           offset-path: path("${path}");
         }
       `}</style>
+
       <svg
+        ref={(ref: HTMLElement | null) => setNode(ref?.closest(".container"))}
         style={{
           zIndex: -1,
           width: "100vw",
@@ -96,4 +95,5 @@ const createPathComponent = ({node}: {
     </>
   );
 };
+
 export default createPathComponent;
