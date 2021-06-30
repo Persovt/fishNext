@@ -1,4 +1,4 @@
-import { useEffect, useState, createRef, forwardRef } from "react";
+import { useEffect, useState, createRef, forwardRef, RefObject } from "react";
 const createPath = (
   ciricle: NodeListOf<HTMLElement>,
   section: NodeListOf<HTMLElement>
@@ -28,7 +28,7 @@ const createPathComponent = () => {
   const [currect, setCurrect] = useState(0);
   const [maxHeight, setMaxHeight] = useState(0);
   const [svgHeight, setSvgHeight] = useState(0);
-  const [node, setNode] = useState<HTMLElement | null>(null);
+  const [node, setNode] = useState<HTMLElement>();
   const [path, setPath] = useState("");
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const createPathComponent = () => {
       `}</style>
 
       <svg
-        ref={(ref: HTMLElement | null) => setNode(ref?.closest(".container"))}
+        ref={(ref: any) => setNode(ref?.closest(".container"))}
         style={{
           zIndex: -1,
           width: "100vw",

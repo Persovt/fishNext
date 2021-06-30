@@ -28,6 +28,7 @@ export default function Home() {
             TankFishJs(ref);
           }}
         ></div>
+        <div className="welcome__ciricle">
         <div className="welcome__content">
           <h1 className="welcome__title">FEOFISH</h1>
           <Image
@@ -41,6 +42,8 @@ export default function Home() {
             Перейти в магазин.
           </button>
         </div>
+        </div>
+        
         <div
           className="next-block"
           onClick={() => (window.location.href = "#about")}
@@ -147,7 +150,7 @@ export default function Home() {
               width="256"
               height="256"
             /> */}
-            <iframe
+            {/* <iframe
               src="https://yandex.ru/map-widget/v1/?um=constructor%3Ace68517423ebe0f7a74e9169cdbecc57a9f2863c9049da2f71567b344c0d80e0&amp;source=constructor"
               width="497"
               height="446"
@@ -155,7 +158,7 @@ export default function Home() {
               style={{
                 borderRadius: "25px",
               }}
-            ></iframe>
+            ></iframe> */}
 
             {/* <img src="static/delivery-bike.svg" className="about__img" alt="" /> */}
           </div>
