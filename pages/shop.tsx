@@ -11,6 +11,7 @@ import {
   Modal,
   Radio,
   Form,
+  Select,
   Button,
 } from "antd";
 import {
@@ -31,6 +32,7 @@ import AuthModal from "../components/authModal.component";
 import ProfileModal from "../components/profileModal.component";
 import axios from "axios";
 const { SubMenu } = Menu;
+const { Option } = Select;
 const { Header, Content, Sider, Footer } = Layout;
 //net Shema (
 interface Shop {
@@ -41,6 +43,12 @@ interface Shop {
 
 function Shop({ products, productGroup, maxPrice }: Shop) {
   console.log(products, "products");
+  // const children = [];
+
+  // {productGroup?.forEach((item: any, index: number) => (
+  //   children.push(<Option value="123" key={item.name}>{item.name}</Option>)
+
+  // ))}
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isModalProfileVisible, setIsModalProfileVisible] =
@@ -54,24 +62,42 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
   const [authStatus, setAuthStatus] = useState<boolean>(false);
   const [currentCard, setCurrentCard] = useState<Object>({});
   const [isModalAuthVisible, setIsModalAuthVisible] = useState<boolean>(false);
-
+  const [selectCategories, setSelectCategories] = useState<Array<number>>([]);
   const addProductCart = (product: Object) => {
     console.log(product);
     setCartProdcuts([product, ...cartProdcuts]);
   };
 
   console.log(authStatus, "authStatus");
-  // useEffect(() => {
-  //   fetch(
-  //     `https://fancrm.retailcrm.ru/api/v5/store/products?apiKey=wEdfH8sQ8VyugnjbuGPfDhKyhfjBINz8&filter[minPrice]=${filterPrice[0]}&filter[maxPrice]=${filterPrice[1]}`,
-  //     { method: "GET" }
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => setProductsList(data))
-  //     .catch((e) => console.log(e));
-  // }, [filterPrice]);
-  /* 
-  todO: Написать бэк который бдутер обрабатывать запросы на retail crm*/
+  useEffect(() => {
+    // axios("http://localhost:3000/api/moysklad", {
+    //   method: "POST",
+    //   data: {
+    //     method: "entity/product",
+    //     methodType: "GET",
+     
+    //   },
+    // }).then(({ data }) => console.log(data.data.rows, "Мой склад FETHC")),
+      axios("http://localhost:3000/api/retailcrm", {
+        method: "POST",
+        data: {
+          method: "listProducts",
+          methodType: "stores",
+          argumentsReq: [
+            {
+              maxPurchasePrice: 10000,
+              // catalogs: selectCategories,
+              // minPrice: filterPrice[0],
+              // maxPrice: filterPrice[1],
+            },
+            1,
+            50,
+          ],
+        },
+      }).then(({ data }) => console.log(data, "filterFetch")),
+      console.log(filterPrice, selectCategories, "filter");
+  }, [filterPrice, selectCategories]);
+
   const onDeleteCartProduct = (index: number) => {
     setCartProdcuts(
       cartProdcuts.filter(
@@ -133,7 +159,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
             </div>
           )}
         </Header>
-        <Layout style={{ marginTop: "50px" }}>
+        <Layout className="layout" style={{ marginTop: "50px" }}>
           <Sider width={300} className="site-layout-background">
             <div className="filters">
               <div className="menu__title">Фильтры:</div>
@@ -176,22 +202,38 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
                 </div>
               </div>
             </div>
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
-              style={{ borderRight: 0 }}
+
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Выберете нужные категории"
+              onChange={(value: Array<number>) => setSelectCategories(value)}
             >
-              <SubMenu key="sub1" title="Категории">
-                {productGroup?.map((item: any, index: number) => (
-                  <Menu.Item key={item.id}>
-                    <Checkbox>{item.name}</Checkbox>
-                  </Menu.Item>
-                ))}
-              </SubMenu>
-            </Menu>
+              {productGroup?.map((item: any, index: number) => (
+                <Option value={item.id} key={item.name}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+            {/* <Form
+                  labelCol={{ span: 4 }}
+                  wrapperCol={{ span: 14 }}
+                  layout="horizontal"
+                  
+                  onChange={(e) => console.log(e, 'VAall')}
+                  onValuesChange={(val) => console.log(val)}
+                >
+                  {productGroup?.map((item: any, index: number) => (
+                    // <Menu.Item key={item.id}>
+                       <Form.Item name={item.name}    valuePropName="checked">
+                         
+                         <Checkbox>{item.name}</Checkbox>
+                      </Form.Item>
+                    // </Menu.Item>
+                  ))}
+                </Form> */}
           </Sider>
-          <Layout style={{ padding: "0 24px" }}>
+          <Layout style={{ padding: "0 24px" }} className="layoutContent">
             {/* <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>List</Breadcrumb.Item>

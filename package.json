@@ -11,11 +11,13 @@
     "antd": "^4.16.3",
     "axios": "^0.21.1",
     "dat.gui": "^0.7.7",
+    "moysklad": "^0.10.0",
     "next": "11.0.0",
     "node-retailcrm-api": "^1.0.8",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-number-format": "^4.6.3"
+    "react-number-format": "^4.6.3",
+    "stripe": "^8.160.0"
   },
   "devDependencies": {
     "@types/dat.gui": "^0.7.6",

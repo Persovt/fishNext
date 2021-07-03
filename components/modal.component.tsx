@@ -80,10 +80,11 @@ const modal = ({
             addProductCart(currectOffer);
             setIsModalVisible(false);
           }}
+          cancelButtonProps={{ style: { display: "none" } }}
           onCancel={() => setIsModalVisible(false)}
           okText="Добавить в карзину"
           cancelText="Отменить"
-
+          className="cardModal"
           // cancelButtonProps={{ style: { display: "none" } }}
         >
           <div className="modal">
@@ -100,6 +101,7 @@ const modal = ({
                 style={{
                   width: "100%",
                   height: "100%",
+                  objectFit: "contain",
                 }}
               />
             </div>
@@ -128,7 +130,13 @@ const modal = ({
                   }}
                 >
                   {currentCard?.offers?.map((item: any, index: number) => (
-                    <Radio.Button value={index} key={item.id}>{item.name}</Radio.Button>
+                    <Radio.Button
+                      style={{ height: "auto" }}
+                      value={index}
+                      key={item.id}
+                    >
+                      {item.name}
+                    </Radio.Button>
                   ))}
                 </Radio.Group>
               </div>
@@ -143,7 +151,7 @@ const modal = ({
                   itemLayout="horizontal"
                   dataSource={data}
                   renderItem={(item) => (
-                    <List.Item >
+                    <List.Item>
                       <List.Item.Meta
                         avatar={
                           <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
@@ -155,7 +163,7 @@ const modal = ({
                               disabled
                               allowHalf
                               defaultValue={2}
-                              style={{ marginLeft: "25px" }}
+                              // style={{ marginLeft: "25px" }}
                             />
                           </>
                         }
