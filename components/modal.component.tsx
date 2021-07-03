@@ -9,7 +9,6 @@ import {
   Avatar,
   RadioChangeEvent,
 } from "antd";
-import { ChangeEvent } from "mongodb";
 import { Skeleton } from "antd";
 
 const { TextArea } = Input;
