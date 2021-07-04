@@ -165,7 +165,7 @@ body {
   margin: 16px 0 16px 24px;
 }
 .shop-cards {
-  justify-content: center;
+ 
   display: flex;
   flex-wrap: wrap;
   /* grid-auto-columns: 1fr; 
@@ -179,6 +179,10 @@ body {
 }
 .fish {
   position: absolute;
+}
+.ant-skeleton-element{
+  width: 100%;
+  height: 100%;
 }
 .welcome {
   background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1197275/oceanBackdrop.jpg);
@@ -826,7 +830,9 @@ body {
   .inputPhone {
     width: 100%;
   }
-
+  .shop-cards {
+    justify-content: center;
+  }
   .layout {
     margin: 0 5%;
 

@@ -67,35 +67,9 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
     console.log(product);
     setCartProdcuts([product, ...cartProdcuts]);
   };
-
-  console.log(authStatus, "authStatus");
+  console.log(isModalVisible, 'isModalVisible')
   useEffect(() => {
-    // axios("http://localhost:3000/api/moysklad", {
-    //   method: "POST",
-    //   data: {
-    //     method: "entity/product",
-    //     methodType: "GET",
-     
-    //   },
-    // }).then(({ data }) => console.log(data.data.rows, "Мой склад FETHC")),
-      axios("http://localhost:3000/api/retailcrm", {
-        method: "POST",
-        data: {
-          method: "listProducts",
-          methodType: "stores",
-          argumentsReq: [
-            {
-              maxPurchasePrice: 10000,
-              // catalogs: selectCategories,
-              // minPrice: filterPrice[0],
-              // maxPrice: filterPrice[1],
-            },
-            1,
-            50,
-          ],
-        },
-      }).then(({ data }) => console.log(data, "filterFetch")),
-      console.log(filterPrice, selectCategories, "filter");
+    
   }, [filterPrice, selectCategories]);
 
   const onDeleteCartProduct = (index: number) => {
@@ -209,8 +183,8 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
               placeholder="Выберете нужные категории"
               onChange={(value: Array<number>) => setSelectCategories(value)}
             >
-              {productGroup?.map((item: any, index: number) => (
-                <Option value={item.id} key={item.name}>
+              {productGroup.map((item: any, index: number) => (
+                <Option value={item.id} key={item.id}>
                   {item.name}
                 </Option>
               ))}
@@ -233,6 +207,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
                   ))}
                 </Form> */}
           </Sider>
+
           <Layout style={{ padding: "0 24px" }} className="layoutContent">
             {/* <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Home</Breadcrumb.Item>
@@ -248,18 +223,24 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
               }}
             >
               <div className="shop-cards">
-                {productsList?.map((item: any, index: number) => (
-                  <ShopCard
-                    key={item.id}
-                    setIsModalVisible={setIsModalVisible}
-                    setCurrentCard={setCurrentCard}
-                    imageUrl={item.imageUrl}
-                    id={item.id}
-                    name={item.name}
-                    price={item.minPrice}
-                    content={item}
-                  />
-                ))}
+                {productsList?.map((item: any, index: number) => {
+                  console.log(item, 'productsList')
+                  return (
+                    <ShopCard
+                      key={item.id}
+                      setIsModalVisible={setIsModalVisible}
+                      setCurrentCard={setCurrentCard}
+                      images={item.images}
+                      id={item.id}
+                      name={item.name}
+                      price={item.buyPrice}
+                      content={item}
+                      rate={
+                        item.rate
+                      }
+                    />
+                  );
+                })}
               </div>
             </Content>
           </Layout>
@@ -280,26 +261,17 @@ export async function getStaticProps() {
   //     "https://fancrm.retailcrm.ru/api/v5/store/product-groups?apiKey=wEdfH8sQ8VyugnjbuGPfDhKyhfjBINz8"
   //   ).then((res) => res.json()),
   // ]);
+
   const data: any = await Promise.all([
-    axios("http://localhost:3000/api/retailcrm", {
-      method: "POST",
-      data: {
-        method: "listProducts",
-        methodType: "stores",
-        arguments: [],
-      },
-    }).then(({ data }) => data.data),
-    axios("http://localhost:3000/api/retailcrm", {
-      method: "POST",
-      data: {
-        method: "listProductGroups",
-        methodType: "stores",
-        arguments: [],
-      },
-    }).then(({ data }) => data.data),
+    axios("http://localhost:3000/api/moysklad/getProducts").then(
+      ({ data }) => data.data
+    ),
+    axios("http://localhost:3000/api/moysklad/getFolder").then(
+      ({ data }) => data.data
+    ),
   ]);
 
-  const [{ products }, { productGroup }]: any = data;
+  const [products, productGroup]: any = data;
 
   // // const data2 = await fetch(
   // //   "https://fancrm.retailcrm.ru/api/v5/store/products?apiKey=wEdfH8sQ8VyugnjbuGPfDhKyhfjBINz8"
@@ -313,12 +285,10 @@ export async function getStaticProps() {
 
   return {
     props: {
-      products: products,
+      products: products.products,
       productGroup: productGroup,
 
-      maxPrice: products.reduce((acc: number, item: any) =>
-        acc > item.maxPrice ? acc : item.maxPrice
-      ),
+      maxPrice: products.maxPrice,
     }, // will be passed to the page component as props
   };
 }

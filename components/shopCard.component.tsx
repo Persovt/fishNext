@@ -1,32 +1,60 @@
 import React from "react";
 import { Card, Rate } from "antd";
+import { Carousel,Skeleton } from "antd";
+
+const contentStyle = {
+  height: "160px",
+  color: "#fff",
+  lineHeight: "160px",
+  textAlign: "center",
+  background: "#364d79",
+};
 const { Meta } = Card;
 interface shopCard {
   setIsModalVisible: Function;
-  imageUrl: string;
+  images: Array<string>;
   setCurrentCard: Function;
   id: number;
   name: string;
   price: number;
-  content: Object
+  content: Object;
+  rate: number;
 }
 const shopCard = ({
   setIsModalVisible,
-  imageUrl,
+  images,
   setCurrentCard,
   id,
   name,
   price,
-  content
+  content,
+  rate,
 }: shopCard) => {
   return (
     <div className="card">
-      <div className="image">
-        <img alt="example" src={imageUrl} />
-      </div>
+      <Carousel autoplay>
+        {images.length ? images.map((item: any) => (
+          <div className="image">
+            <img alt="example" src={item} />
+          </div>
+        )) : (
+          <div className="image">
+           <Skeleton.Image  style={{
+             width: '100%',
+             height: '100%'
+           }}/>
+          </div>
+        )}
+      </Carousel>
+
       <div className="card__name">{name}</div>
       <div className="card__row">
-        <Rate allowHalf defaultValue={5} style={{ margin: "10px" }} disabled />
+        <Rate
+          allowHalf
+          defaultValue={rate}
+          style={{ margin: "10px" }}
+          disabled
+        />
         <div className="card__price">{price}₽</div>
       </div>
 

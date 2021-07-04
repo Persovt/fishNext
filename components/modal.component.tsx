@@ -10,6 +10,7 @@ import {
   RadioChangeEvent,
 } from "antd";
 import { Skeleton } from "antd";
+import axios from "axios";
 
 const { TextArea } = Input;
 const data = [
@@ -44,18 +45,30 @@ const modal = ({
 }: modal): ReactElement => {
   const [openMoreComment, setOpenMoreComment] = useState<boolean>(false);
   const [currectIndexProduct, setCurrectIndexProduct] = useState<number>(0);
-  const [currectOffer, setCurrectOffer] = useState<any>({
-    images: [""],
-  });
+  const [currectOffer, setCurrectOffer] = useState<any>({});
+  const [allVariant, setAllVariant] = useState<any>([]);
+  console.log(currentCard.id, "currentCard");
   React.useEffect(() => {
     setCurrectIndexProduct(0);
-
-    if (currentCard.offers) {
-      setCurrectOffer(currentCard?.offers[0]);
+    if (currentCard.id) {
+      fetch(
+        "http://localhost:3000/api/moysklad/getVariant?idProduct=" +
+          currentCard.id
+      )
+        .then((res) => res.json())
+        .then((variants) => setAllVariant(variants.data.variants));
+        console.log(allVariant, 'allVariant')
     }
-  }, [currentCard.offers]);
-  console.log(currentCard?.offers);
-  if (currentCard?.offers)
+  }, currentCard.id);
+  // React.useEffect(() => {
+  //   setCurrectIndexProduct(0);
+
+  //   if (currentCard.offers) {
+  //     setCurrectOffer(currentCard?.offers[0]);
+  //   }
+  // }, [currentCard.offers]);
+  console.log(allVariant,'allVariantallVariantallVariantallVariantallVariantallVariant');
+  if (allVariant.length)
     return (
       <>
         <Modal
@@ -88,7 +101,7 @@ const modal = ({
         >
           <div className="modal">
             <div className="modal__img">
-              <img
+              {/* <img
                 src={
                   currectOffer.images.length ? (
                     currectOffer.images[0]
@@ -102,7 +115,7 @@ const modal = ({
                   height: "100%",
                   objectFit: "contain",
                 }}
-              />
+              /> */}
             </div>
             <div className="modal__content">
               <div className="modal__description">
