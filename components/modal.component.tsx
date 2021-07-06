@@ -8,6 +8,8 @@ import {
   List,
   Avatar,
   RadioChangeEvent,
+  Slider,
+  Carousel,
 } from "antd";
 import { Skeleton } from "antd";
 import axios from "axios";
@@ -46,18 +48,37 @@ const modal = ({
   const [openMoreComment, setOpenMoreComment] = useState<boolean>(false);
   const [currectIndexProduct, setCurrectIndexProduct] = useState<number>(0);
   const [currectOffer, setCurrectOffer] = useState<any>({});
+  const [commnets, setComments] = useState<any>([]);
   const [allVariant, setAllVariant] = useState<any>([]);
-  console.log(currentCard.id, "currentCard");
-  React.useEffect(() => {
+
+  console.log(currentCard, "currentCard");
+
+  const closeCart = (
+    setIsModalVisible: Function,
+    setAllVariant: Function,
+    setCurrectOffer: Function,
+    setCurrectIndexProduct: Function
+  ) => {
+    setIsModalVisible(false);
+    setAllVariant([]);
+    setCurrectOffer({});
     setCurrectIndexProduct(0);
+  };
+
+  React.useEffect(() => {
     if (currentCard.id) {
       fetch(
         "http://localhost:3000/api/moysklad/getVariant?idProduct=" +
           currentCard.id
       )
         .then((res) => res.json())
-        .then((variants) => setAllVariant(variants.data.variants));
-        console.log(allVariant, 'allVariant')
+        .then((variants) => {
+          setAllVariant(variants.data.variants);
+          if (variants.data.variants.length)
+            setCurrectOffer(variants.data.variants[currectIndexProduct]);
+          setComments(variants.data.comment);
+        });
+      console.log(currectOffer, "currectOffer");
     }
   }, currentCard.id);
   // React.useEffect(() => {
@@ -67,8 +88,11 @@ const modal = ({
   //     setCurrectOffer(currentCard?.offers[0]);
   //   }
   // }, [currentCard.offers]);
-  console.log(allVariant,'allVariantallVariantallVariantallVariantallVariantallVariant');
-  if (allVariant.length)
+  console.log(
+    allVariant,
+    "allVariantallVariantallVariantallVariantallVariantallVariant"
+  );
+  if (currectOffer.id)
     return (
       <>
         <Modal
@@ -76,10 +100,11 @@ const modal = ({
             //The main implementation code can pass in an html structure component here is also possible
             [
               <div>
-                <span> Криветка морская</span>
+                <span>{currentCard.name}</span>
                 <Rate
                   allowHalf
-                  defaultValue={5}
+                  value={currentCard.rate}
+                  defaultValue={currentCard.rate}
                   style={{ marginLeft: "25px" }}
                   disabled
                 />
@@ -90,39 +115,50 @@ const modal = ({
           visible={isModalVisible}
           onOk={() => {
             addProductCart(currectOffer);
-            setIsModalVisible(false);
+            closeCart(
+              setIsModalVisible,
+              setAllVariant,
+              setCurrectOffer,
+              setCurrectIndexProduct
+            );
           }}
           cancelButtonProps={{ style: { display: "none" } }}
-          onCancel={() => setIsModalVisible(false)}
+          onCancel={() =>
+            closeCart(
+              setIsModalVisible,
+              setAllVariant,
+              setCurrectOffer,
+              setCurrectIndexProduct
+            )
+          }
           okText="Добавить в карзину"
           cancelText="Отменить"
           className="cardModal"
           // cancelButtonProps={{ style: { display: "none" } }}
         >
           <div className="modal">
-            <div className="modal__img">
-              {/* <img
-                src={
-                  currectOffer.images.length ? (
-                    currectOffer.images[0]
-                  ) : (
-                    <Skeleton.Image />
-                  )
-                }
-                alt=""
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
-              /> */}
-            </div>
+            {currectOffer.images.length ? (
+              <Carousel autoplay>
+                {currectOffer.images.map((item: any) => (
+                  <div className="modal__img">
+                    <img alt="example" src={item} />
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <div className="modal__img">
+                <Skeleton.Image
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
+            )}
+
             <div className="modal__content">
               <div className="modal__description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Temporibus sint quis molestias odit iste repellat vero eveniet
-                eligendi tempore, saepe atque laudantium maxime omnis quibusdam
-                facere possimus unde vitae. Magni.
+                {currectOffer.description}
               </div>
               <div className="modal__select-type">
                 {/*
@@ -138,10 +174,10 @@ const modal = ({
                   }}
                   onChange={(e: RadioChangeEvent) => {
                     setCurrectIndexProduct(e.target.value);
-                    setCurrectOffer(currentCard.offers[e.target.value]);
+                    setCurrectOffer(allVariant[e.target.value]);
                   }}
                 >
-                  {currentCard?.offers?.map((item: any, index: number) => (
+                  {allVariant.map((item: any, index: number) => (
                     <Radio.Button
                       style={{ height: "auto" }}
                       value={index}
@@ -161,8 +197,8 @@ const modal = ({
                       : "modal__commnet-list"
                   }
                   itemLayout="horizontal"
-                  dataSource={data}
-                  renderItem={(item) => (
+                  dataSource={commnets}
+                  renderItem={(item: any) => (
                     <List.Item>
                       <List.Item.Meta
                         avatar={
@@ -170,16 +206,16 @@ const modal = ({
                         }
                         title={
                           <>
-                            <a href="https://ant.design">{item.title}</a>{" "}
+                           <span>{item.title}</span>
                             <Rate
                               disabled
                               allowHalf
-                              defaultValue={2}
+                              defaultValue={item.rate}
                               // style={{ marginLeft: "25px" }}
                             />
                           </>
                         }
-                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                        description={item.content}
                       />
                     </List.Item>
                   )}

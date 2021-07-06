@@ -2,7 +2,7 @@ import axios, { Method } from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
-  data: any;
+  status: boolean;
 };
 
 interface Request extends NextApiRequest {
@@ -19,13 +19,9 @@ interface ServerResponse {
   data: any;
 }
 export default async (req: Request, res: NextApiResponse<Data>) => {
-  const { randomCode, inputPhone } = req.query;
+  const balance = await axios(
+    `https://${EMAIL}:${API_KEY}@gate.smsaero.ru/v2/balance`
+  ).then((res) => res.data.data.balance);
 
-  const data = await axios(
-    `https://${EMAIL}:${API_KEY}@gate.smsaero.ru/v2/sms/testsend?numbers[]=8${inputPhone}&text=${encodeURIComponent(
-      "Код для авторизации: " + randomCode
-    )}&sign=SMS+Aero`
-  );
-
-  res.status(200).json({ data: data.data });
+  res.status(200).json({ status: balance > 3 });
 };

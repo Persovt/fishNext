@@ -4,49 +4,13 @@ import React from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Skeleton, Space, Divider, Switch, Form, Radio } from "antd";
 import axios from "axios";
-const data = [
-  {
-    title: "Ant Design Title 1",
-  },
-  {
-    title: "Ant Design Title 2",
-  },
-  {
-    title: "Ant Design Title 3",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-];
+
 const text = <span style={{ margin: "0 auto" }}>Корзина</span>;
 const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
-  console.log(cartProdcuts, "cartProdcuts");
-//   {
-//     lastName: 'Hello!',
-//     items: [
-//         {
-//             productName: '123'
-//         }
-//     ]
-// }
+
   const createOrder = (cartProdcuts: Array<Object>) => {
-    console.log(cartProdcuts)
-    axios("/api/retailcrm", {
-      method: "POST",
-      data: {
-        methodFetch: "POST",
-        method: "orders/create",
-        body: {
-          lastName: 'Hello!',
-          items: [{
-            productName: 'TESTS'
-          }]
-          // "order[items][]": {
-          //   productName: 'BIGBIIBIBIB'
-          // },
-        },
-      },
-    }).then((res) => console.log(res));
+ 
+    /* customerorder - api method */
   };
   return (
     <>
@@ -69,7 +33,7 @@ const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
               <span className="cartList__name">{item.name}</span>
             </div>
             <div className="cartList__right" style={{ display: "flex" }}>
-              <div className="cartList__price">{item.price}₽</div>
+              <div className="cartList__price">{item.salePrices}₽</div>
               <div className="cartList__action">
                 <div className="cartList__action-item">
                   <DeleteOutlined onClick={() => onDeleteCartProduct(index)} />
@@ -103,7 +67,7 @@ const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
     </>
   );
 };
-const buttonWidth = 70;
+
 type PopOver = {
   children: React.Component;
   cartProdcuts: Array<Object>;

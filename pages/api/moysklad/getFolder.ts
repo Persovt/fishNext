@@ -31,6 +31,7 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
     return {
       id: item.id,
       name: item.name,
+    
     };
   });
   res.status(200).json({ succes: true, data: data });

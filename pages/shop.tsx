@@ -22,13 +22,13 @@ import {
   LogoutOutlined,
   LoginOutlined,
 } from "@ant-design/icons";
-import InputCode from "../components/inputCode.component";
-import InputPhone from "../components/inputPhone.component";
+import InputCode from "../components/authComponents/inputCode/inputCode.component";
+import InputPhone from "../components/authComponents/inputPhone/inputPhone.component";
 import ProductModal from "../components/modal.component";
 import ShopCard from "../components/shopCard.component";
 import styles from "../styles/style.module.css";
 import PopOver from "../components/popover.component";
-import AuthModal from "../components/authModal.component";
+import AuthModal from "../components/authComponents/authCodeModal/authModal.component"
 import ProfileModal from "../components/profileModal.component";
 import axios from "axios";
 const { SubMenu } = Menu;
@@ -42,13 +42,7 @@ interface Shop {
 }
 
 function Shop({ products, productGroup, maxPrice }: Shop) {
-  console.log(products, "products");
-  // const children = [];
 
-  // {productGroup?.forEach((item: any, index: number) => (
-  //   children.push(<Option value="123" key={item.name}>{item.name}</Option>)
-
-  // ))}
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isModalProfileVisible, setIsModalProfileVisible] =
@@ -62,16 +56,26 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
   const [authStatus, setAuthStatus] = useState<boolean>(false);
   const [currentCard, setCurrentCard] = useState<Object>({});
   const [isModalAuthVisible, setIsModalAuthVisible] = useState<boolean>(false);
-  const [selectCategories, setSelectCategories] = useState<Array<number>>([]);
+  const [selectCategories, setSelectCategories] = useState<Array<string>>([]);
+  
+
+  const applyFilter = (filterPrice : [number, number],selectCategories: Array<string>): void => {
+    console.log(filterPrice,selectCategories, 'appleFilter')
+ axios("http://localhost:3000/api/moysklad/getProducts", {
+      method: 'POST',
+      data: {
+        filter: {
+          minPrice: filterPrice[0],
+          maxPrice: filterPrice[1],
+          categories: selectCategories
+        }
+      }
+    }).then(({data}: any) => setProductsList(data.data.products)) 
+  }
   const addProductCart = (product: Object) => {
-    console.log(product);
+  
     setCartProdcuts([product, ...cartProdcuts]);
   };
-  console.log(isModalVisible, 'isModalVisible')
-  useEffect(() => {
-    
-  }, [filterPrice, selectCategories]);
-
   const onDeleteCartProduct = (index: number) => {
     setCartProdcuts(
       cartProdcuts.filter(
@@ -181,7 +185,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
               mode="multiple"
               style={{ width: "100%" }}
               placeholder="Выберете нужные категории"
-              onChange={(value: Array<number>) => setSelectCategories(value)}
+              onChange={(value: Array<string>) => setSelectCategories(value)}
             >
               {productGroup.map((item: any, index: number) => (
                 <Option value={item.id} key={item.id}>
@@ -189,6 +193,8 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
                 </Option>
               ))}
             </Select>
+            <Button className="filter__accept" type="primary" onClick={() => applyFilter(filterPrice,selectCategories)}>Применить</Button>
+          
             {/* <Form
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 14 }}
@@ -224,7 +230,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
             >
               <div className="shop-cards">
                 {productsList?.map((item: any, index: number) => {
-                  console.log(item, 'productsList')
+                  
                   return (
                     <ShopCard
                       key={item.id}

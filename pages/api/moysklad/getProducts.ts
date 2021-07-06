@@ -3,64 +3,87 @@
 import axios from "axios";
 import Moysklad, { Instance } from "moysklad";
 import type { NextApiRequest, NextApiResponse } from "next";
-
+var urlapi = require("url");
 const ms: any = Moysklad({ token: "1fc2be4c99979988e91573bd0f27a1cb1dacc958" });
+
+type Products = {
+  name: String;
+  images: Array<string>;
+  rate: number;
+  buyPrice: number;
+  id: number;
+};
 
 type Data = {
   succes: boolean;
   data: {
-    products: [
-      {
-        name: String;
-        images: Array<string>;
-        rate: number;
-        buyPrice: number;
-        id: number;
-      }
-    ];
+    products: Array<Products>;
     maxPrice: number;
   };
 };
-
+type Filter = {
+  minPrice: number;
+  maxPrice: number;
+  categories: Array<string>;
+};
 interface Request extends NextApiRequest {
   body: {
     requestBody: string;
-    filter: {
-      minPrice: number;
-    };
+    filter: Filter;
   };
 }
+const filterProducts = (item: any, filter: Filter) => {
+  const categoriesId: string | null = new URL(
+    item.productFolder.meta.uuidHref.replace("#", " ")
+  ).searchParams.get("id");
+
+  return (
+    (filter.minPrice != undefined
+      ? item.buyPrice.value >= filter.minPrice
+      : true) &&
+    (filter.maxPrice != undefined
+      ? item.buyPrice.value <= filter.maxPrice
+      : true) &&
+    (filter.categories != undefined
+      ? !filter.categories.length ||
+        filter.categories.includes(categoriesId || "")
+      : true)
+  );
+};
 
 export default async (req: Request, res: NextApiResponse<Data>) => {
-  const { requestBody = {}, filter } = req.body;
+  const {
+    requestBody = {},
+    filter = {
+      minPrice: -1,
+      maxPrice: Number.MAX_SAFE_INTEGER,
+      categories: [],
+    },
+  } = req.body;
 
-  const response = await ms.GET("entity/product", requestBody);
-  const imagePromise = response.rows.map(async (item: any) =>
-    ms.GET(item.images.meta.href)
+  const response = await ms.GET(
+    "entity/product",
+    Object.assign({}, requestBody, { expand: "images", limit: 100 })
   );
-  const imagesLink = await Promise.all(imagePromise).then((res: any) => {
-    return res.map((resItem: any) =>
-      resItem.rows.length
-        ? resItem.rows.map(
-            (item: any) =>
-              "http://localhost:3000/api/moysklad/getImage?imageUrl=https://online.moysklad.ru/api/remap/1.2/download/" +
-              item.meta.downloadHref
-          )
-        : []
-    );
-  });
- 
+
   let maxPrice = 0;
-  const products = response.rows.map((item: any, index: number) => {
+  let products: Array<Products> = [];
+  response.rows.forEach((item: any, index: number) => {
     if (item.buyPrice.value > maxPrice) maxPrice = item.buyPrice.value;
-    return {
-      id: item.id,
-      name: item.name,
-      buyPrice: item.buyPrice.value,
-      rate:
-        item.attributes.find((item: any) => item.name === "rate")?.value || 5,
-      images: imagesLink[index],
-    };
+    if (filterProducts(item, filter))
+      products.push({
+        id: item.id,
+        name: item.name,
+        buyPrice: item.buyPrice.value,
+        rate:
+          item.attributes.find((item: any) => item.name === "rate")?.value || 5,
+        images: item.images.rows.map((item: any) => {
+          return (
+            "http://localhost:3000/api/moysklad/getImage?imageUrl=" +
+            item.meta.downloadHref
+          );
+        }),
+      });
   });
 
   const data = {

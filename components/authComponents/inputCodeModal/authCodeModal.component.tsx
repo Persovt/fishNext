@@ -13,8 +13,8 @@ import {
 } from "antd";
 import NumberFormat from "react-number-format";
 import { useState } from "react";
-import InputCode from "./inputCode.component";
-import InputPhone from "./inputPhone.component";
+import InputCode from "../inputCode/inputCode.component";
+import InputPhone from "../inputPhone/inputPhone.component";
 type Auth = {
   setIsModalAuthCodeVisible: Function;
   isModalAuthCodeVisible: boolean;
@@ -48,6 +48,7 @@ const AuthCode = ({
         onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
+       
       >
         <Form
           // {...layout}
