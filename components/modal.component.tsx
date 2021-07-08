@@ -139,8 +139,8 @@ const modal = ({
           <div className="modal">
             {currectOffer.images.length ? (
               <Carousel autoplay>
-                {currectOffer.images.map((item: any) => (
-                  <div className="modal__img">
+                {currectOffer.images.map((item: any, index: number) => (
+                  <div className="modal__img" key={item}>
                     <img alt="example" src={item} />
                   </div>
                 ))}

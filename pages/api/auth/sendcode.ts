@@ -18,7 +18,8 @@ mongoose.connect(uri, {
 
 type Data = {
   success: boolean;
-  data: {};
+  data?: {};
+  error?: string;
 };
 
 interface Request extends NextApiRequest {
@@ -31,7 +32,7 @@ interface Request extends NextApiRequest {
 
 export default async (req: Request, res: NextApiResponse<Data>) => {
   const { phone, email, type } = req.body;
-console.log(req.body)
+  console.log(req.body);
   const uuid = uuidv4();
   const code = Math.trunc(Math.random() * 10000);
   const date = new Date();
@@ -47,7 +48,7 @@ console.log(req.body)
   if (type === "email") {
     const sendCode = new sendCodeSchema({ id: uuid, email, code, date, type });
 
-    let result = await transporter.sendMail({
+    let result: any = await transporter.sendMail({
       from: '"FeoFish" <feofish@example.com>',
       to: email,
       subject: "Код авторизации: " + code,

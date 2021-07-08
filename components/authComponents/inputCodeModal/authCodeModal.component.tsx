@@ -15,73 +15,55 @@ import NumberFormat from "react-number-format";
 import { useState } from "react";
 import InputCode from "../inputCode/inputCode.component";
 import InputPhone from "../inputPhone/inputPhone.component";
+import axios from "axios";
 type Auth = {
-  setIsModalAuthCodeVisible: Function;
-  isModalAuthCodeVisible: boolean;
   setAuthStatus: Function;
-  authCode: string;
+  data: {
+    type: string;
+    value: string;
+  };
+  closeModal: Function;
+  setAuthData: Function;
 };
-const AuthCode = ({
-  setIsModalAuthCodeVisible,
-  isModalAuthCodeVisible,
-  setAuthStatus,
-  authCode,
-}: Auth) => {
+const AuthCode = ({ setAuthStatus, data, closeModal,setAuthData }: Auth) => {
   const [disabelForm, setDisabelForm] = useState<boolean>(true);
   const [inputAuthCode, setInputAuthCode] = useState<string>("");
-  const handleOk = () => {
-    setIsModalAuthCodeVisible(false);
-  };
 
-  const handleCancel = () => {
-    setIsModalAuthCodeVisible(false);
+  const checkCode = () => {
+    setInputAuthCode("");
+    closeModal()
+    axios("http://localhost:3000/api/auth/auth", {
+      method: "POST",
+      data: { [data.type]: data.value, code: inputAuthCode },
+    }).then(({ data }: any) => {
+      setAuthStatus(data.succes);
+      setAuthData(data.data)
+    });
   };
   return (
     <>
-      <Modal
-        style={{
-          maxWidth: "fit-content",
-          margin: "auto",
-        }}
-        title="Авторизация"
-        visible={isModalAuthCodeVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={null}
-       
+      <Form
+        // {...layout}
+        name="nest-messages"
+        onFinish={() => checkCode()}
       >
-        <Form
-          // {...layout}
-          name="nest-messages"
-          onFinish={(e) => {
-         /*
-
-         AAAAAAAAA вернуть!!!!!!!!!!
-
-         */
-            // if (authCode === inputAuthCode) {
-              setAuthStatus(true);
-              setIsModalAuthCodeVisible(false);
-            // }
-          }}
-        >
-          <Form.Item name={"phone"} required>
-            <InputCode
-              onChange={(value: string) => {
-                if (value.length > 5) {
-                  setInputAuthCode(value);
-                  setDisabelForm(false);
-                } else setDisabelForm(true);
-              }}
-            />
-          </Form.Item>
-          <Form.Item wrapperCol={{ offset: 8 }}>
-            <Button type="primary" htmlType="submit" disabled={disabelForm}>
-              Авторизоваться
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+        <Form.Item name={"phone"} required>
+          <InputCode
+            value={inputAuthCode}
+            onChange={(value: string) => {
+              if (value.length > 3) {
+                setInputAuthCode(value);
+                setDisabelForm(false);
+              } else setDisabelForm(true);
+            }}
+          />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 8 }}>
+          <Button type="primary" htmlType="submit" disabled={disabelForm}>
+            Авторизоваться
+          </Button>
+        </Form.Item>
+      </Form>
     </>
   );
 };

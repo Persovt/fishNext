@@ -14,8 +14,10 @@ interface Variants {
   id: number;
   name: string;
   description: string;
-  salePrices: number;
+  price: number;
   images: Array<string>;
+  quantity: number;
+  productHref: string;
 }
 type Data = {
   succes: boolean;
@@ -51,7 +53,9 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
         id: item.id,
         name: item.name,
         description: item.description,
-        salePrices:
+        quantity: 1,
+        productHref: item.product.meta.href,
+        price:
           item.salePrices.reduce(
             (acc: number, next: { value: number }) => acc + next.value,
             0

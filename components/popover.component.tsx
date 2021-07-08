@@ -6,17 +6,24 @@ import { Skeleton, Space, Divider, Switch, Form, Radio } from "antd";
 import axios from "axios";
 
 const text = <span style={{ margin: "0 auto" }}>Корзина</span>;
-const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
-
-  const createOrder = (cartProdcuts: Array<Object>) => {
+const Content = ({ cartProducts, onDeleteCartProduct, authData }: any) => {
+  console.log(authData, "authData12");
+  const createOrder = (cartProducts: Array<Object>, authData: Object) => {
+    console.log(cartProducts, authData, 'HEELLLOO!!!');
  
-    /* customerorder - api method */
+    axios("http://localhost:3000/api/moysklad/createOrder", {
+      method: "POST",
+      data: {
+        cartProducts: cartProducts,
+        authData,
+      },
+    }).then(({ data }) => console.log(data, "authauthauth"));
   };
   return (
     <>
       <List
         itemLayout="horizontal"
-        dataSource={cartProdcuts}
+        dataSource={cartProducts}
         renderItem={(item: any, index: number) => (
           <List.Item>
             <div className="cartList__image">
@@ -33,7 +40,7 @@ const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
               <span className="cartList__name">{item.name}</span>
             </div>
             <div className="cartList__right" style={{ display: "flex" }}>
-              <div className="cartList__price">{item.salePrices}₽</div>
+              <div className="cartList__price">{item.price}₽</div>
               <div className="cartList__action">
                 <div className="cartList__action-item">
                   <DeleteOutlined onClick={() => onDeleteCartProduct(index)} />
@@ -58,8 +65,8 @@ const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
       <hr />
       <div className="popOver__footer">
         <Button
-          disabled={!cartProdcuts.length}
-          onClick={() => createOrder(cartProdcuts)}
+          disabled={!cartProducts.length}
+          onClick={() => createOrder(cartProducts, authData)}
         >
           Купить
         </Button>
@@ -70,10 +77,16 @@ const Content = ({ cartProdcuts, onDeleteCartProduct }: any) => {
 
 type PopOver = {
   children: React.Component;
-  cartProdcuts: Array<Object>;
+  cartProducts: Array<Object>;
   onDeleteCartProduct: Function;
+  authData: Object;
 };
-const PopOver = ({ children, cartProdcuts, onDeleteCartProduct }: any) => {
+const PopOver = ({
+  children,
+  cartProducts,
+  onDeleteCartProduct,
+  authData,
+}: any) => {
   return (
     <>
       <Popover
@@ -82,8 +95,9 @@ const PopOver = ({ children, cartProdcuts, onDeleteCartProduct }: any) => {
         title={text}
         content={
           <Content
-            cartProdcuts={cartProdcuts}
+            cartProducts={cartProducts}
             onDeleteCartProduct={onDeleteCartProduct}
+            authData={authData}
           />
         }
         trigger="click"

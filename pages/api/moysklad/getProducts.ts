@@ -60,16 +60,17 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
       categories: [],
     },
   } = req.body;
-
+  const { productId } = req.query;
   const response = await ms.GET(
     "entity/product",
     Object.assign({}, requestBody, { expand: "images", limit: 100 })
   );
-
+  console.log(response);
   let maxPrice = 0;
   let products: Array<Products> = [];
   response.rows.forEach((item: any, index: number) => {
-    if (item.buyPrice.value > maxPrice) maxPrice = item.buyPrice.value;
+    //if (item.buyPrice.value > maxPrice) maxPrice = item.buyPrice.value;
+    maxPrice = Math.max(maxPrice, item.buyPrice.value)
     if (filterProducts(item, filter))
       products.push({
         id: item.id,

@@ -17,29 +17,53 @@ const ms: any = Moysklad({ token: "1fc2be4c99979988e91573bd0f27a1cb1dacc958" });
 
 type Data = {
   succes: boolean;
-  data: {};
+  data: Object;
 };
 
 interface Request extends NextApiRequest {
   body: {
     phone: string;
+    email: string;
+    code: number;
   };
 }
 
 export default async (req: Request, res: NextApiResponse<Data>) => {
-  const { phone } = req.body;
-  const uuid = uuidv4();
-  const kitty = new sendCodeSchema({ id: uuid, phone });
-  kitty.save().then(() => console.log("meow"));
+  const { phone, code, email } = req.body;
+  const response = await ms.GET("entity/counterparty", {
+    filter: {
+      phone,
+      email,
+    },
+  });
+  console.log(response.meta.size);
+  let authData: any = {};
 
-  //   const response = await ms.GET("entity/counterparty", requestBody);
-  //   console.log(response);
-  //   const data = response.rows.map((item: any) => {
-  //     return {
-  //       id: item.id,
-  //       name: item.name,
-  //       //   href:
-  //     };
-  //   });
-  res.status(200).json({ succes: true, data: {} });
+  const checkCode = 1;
+  // const checkCode = await sendCodeSchema.findOneAndDelete({
+  //   phone,
+  //   email,
+  //   code,
+  // });
+  if (checkCode) {
+    if (response.meta.size) authData = response.rows[0];
+    else {
+      authData = await ms.POST("entity/counterparty", {
+        name: "Новый пользователь",
+        phone,
+        email,
+      }, { expand: "meta", limit: 100 });
+    }
+  }
+  console.log(authData)
+  res.status(200).json({
+    succes: Boolean(checkCode),
+    data: {
+      id: authData.id,
+      name: authData.name,
+      phone: authData.phone,
+      email: authData.email,
+      actualAddress: authData.actualAddress,
+    },
+  });
 };

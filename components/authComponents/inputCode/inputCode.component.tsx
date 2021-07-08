@@ -1,15 +1,18 @@
 import NumberFormat from "react-number-format";
 interface inputCode {
   onChange: Function;
+  value: string;
 }
-const inputCode = ({ onChange }: inputCode) => {
+
+const inputCode = ({ onChange,value }: inputCode) => {
   return (
     <NumberFormat
       className="inputCode"
-      format="###-###"
+      format="####"
       allowEmptyFormatting
       mask="*"
       required
+      value={value}
       onValueChange={({ value }) => onChange(value)}
     />
   );
