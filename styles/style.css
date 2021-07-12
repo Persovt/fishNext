@@ -30,6 +30,15 @@ body {
   margin: 16px 24px 16px 0;
   background: rgba(255, 255, 255, 0.3);
 }
+.cartList__skeletonAvatar{
+  width: 100% !important;
+  height: 100% !important;
+}
+.order__addCartButton {
+  margin: 0 20px;
+  width: 128px;
+  border-radius: 5px;
+}
 .price__filter-input {
   display: flex;
 }
@@ -100,12 +109,53 @@ body {
 .ant-modal {
   width: 40%;
 }
-.modal__img {
+/* .modal__img {
+  width: 100%;
+  height: 100%;
+} */
+.modal__img img {
   width: 100%;
   height: 100%;
 }
+.modal__content {
+  margin-left: 30px;
+}
+.order__inputNumber {
+  height: 32px;
+  width: 64px;
+}
+.order__inputNumber input {
+  text-align: center;
+}
+.order__buttonLeft {
+  width: 32px;
+  height: 32px;
+  border-radius: 5px 0 0 5px;
+}
+.order__buttonRight {
+  width: 32px;
+  height: 32px;
+  border-radius: 0 5px 5px 0;
+}
+.modal__list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  align-items: center;
+}
+.modal__corousel {
+  margin: auto !important;
+}
 .filter__accept {
   margin-top: 10px;
+}
+.modal__variantRight {
+  display: flex;
+}
+.modal__variantAction {
+  margin: 0 20px;
+  display: flex;
+  flex-wrap: nowrap;
 }
 .toProduct {
   background: rgba(84, 140, 177, 0.8);
@@ -373,6 +423,7 @@ body {
 }
 .popOver__footer {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
 }
 .cartList__information {
@@ -390,6 +441,12 @@ body {
 }
 .cartList__action {
   margin-right: 11px;
+  display: flex;
+}
+.popOver__orderPrice {
+  font-size: 1.25em;
+  margin: 0 20px;
+  font-weight: bold;
 }
 .cartList__right {
   display: flex;
@@ -397,6 +454,7 @@ body {
 }
 .cartList__price {
   margin-left: 50px;
+  text-align: center;
 }
 .cartList__action-item:hover {
   color: #1890ff;
@@ -688,9 +746,9 @@ body {
   margin-top: 5px;
   color: white;
 }
-.order__list{
-height: 50vh;
-    overflow-y: scroll;
+.order__list {
+  height: 50vh;
+  overflow-y: scroll;
 }
 .footer-list {
   margin: 0;
@@ -706,13 +764,13 @@ height: 50vh;
   color: white;
   text-decoration: none;
 }
-.back-arrow{
+.back-arrow {
   border: none;
-    font-size: 2em;
-    color: silver;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  font-size: 2em;
+  color: silver;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .footer-link:hover {
   color: #abd1ea;
@@ -791,7 +849,6 @@ height: 50vh;
   flex-wrap: wrap;
 }
 @media (max-width: 768px) {
-  
   .cardModal .ant-modal-footer {
     display: flex;
     flex-direction: column;
@@ -824,7 +881,7 @@ height: 50vh;
     flex-direction: column !important;
     align-items: center;
   }
-  
+
   .site-layout-background {
     max-width: none !important;
     min-width: auto !important;

@@ -71,6 +71,7 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
   response.rows.forEach((item: any, index: number) => {
     //if (item.buyPrice.value > maxPrice) maxPrice = item.buyPrice.value;
     maxPrice = Math.max(maxPrice, item.buyPrice.value)
+    console.log(item, 'item products')
     if (filterProducts(item, filter))
       products.push({
         id: item.id,

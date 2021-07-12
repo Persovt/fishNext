@@ -8,9 +8,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^3.2.0",
+    "@reduxjs/toolkit": "^1.6.0",
     "antd": "^4.15.2",
     "axios": "^0.21.1",
+    "cookie": "^0.4.1",
+    "cookies": "^0.8.0",
     "dat.gui": "^0.7.7",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.2",
     "moysklad": "^0.10.0",
     "next": "11.0.0",
@@ -19,11 +24,15 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-number-format": "^4.6.3",
+    "react-redux": "^7.2.4",
     "stripe": "^8.160.0",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
+    "@types/cookie": "^0.4.1",
+    "@types/cookies": "^0.7.7",
     "@types/dat.gui": "^0.7.6",
+    "@types/jsonwebtoken": "^8.5.4",
     "@types/nodemailer": "^6.4.2",
     "@types/react": "17.0.11",
     "@types/react-dom": "^17.0.8",

@@ -18,6 +18,7 @@ import InputPhone from "../inputPhone/inputPhone.component";
 import InputEmail from "../inputEmail/inputEmail.component";
 import AuthCodeComponent from "../inputCodeModal/authCodeModal.component"; //"../inputCodeModal/authCodeModal.component";
 import axios from "axios";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { MailOutlined, PhoneOutlined } from "@ant-design/icons";
 type Auth = {
   setAuthStatus: Function;
@@ -46,6 +47,7 @@ const Auth = ({
   const [authPhoneStatus, setAuthPhoneStatus] = useState<boolean>(true);
   const [isModalAuthCodeVisible, setIsModalAuthCodeVisible] =
     useState<boolean>(false);
+  const fpPromise = FingerprintJS.load();
   const defaultAuthModal = () => {
     setAuthType("mail");
     setInputAdresCode({
@@ -60,13 +62,17 @@ const Auth = ({
     defaultAuthModal();
   };
 
-  const sendCode = (value: Object) => {
+  const sendCode = async (value: Object) => {
+    const fp = await fpPromise;
+    const result = await fp.get();
+
     console.log(inputAdresCode);
     axios("http://localhost:3000/api/auth/sendcode", {
       method: "POST",
       data: {
         [inputAdresCode.type]: inputAdresCode.value,
         type: inputAdresCode.type,
+        visitorId: result.visitorId
       },
     }).then(({ data }) => console.log(data, "sendCode"));
 
@@ -120,7 +126,7 @@ const Auth = ({
           <>
             {" "}
             <Menu
-              onClick={(value) => changeAuthStatus(value.key)}
+              onClick={({ key }: any) => changeAuthStatus(key)}
               mode="horizontal"
               defaultSelectedKeys={["mail"]}
               className="auth__menu-change-type"

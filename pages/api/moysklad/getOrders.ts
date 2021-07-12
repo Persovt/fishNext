@@ -35,12 +35,15 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
 
   let data = response.rows.map((item: any) => {
     return {
+      id: item.id,
       orderName: item.name,
       status: {
         name: item.state.name,
         color: `#${item.state.color.toString(16)}`,
       },
+      orderPrice: item.sum,
       products: item.positions.rows.map((productItem: any) => {
+        console.log(productItem.assortment, "productItem.assortment");
         return {
           id: productItem.id,
           quantity: productItem.quantity,
@@ -48,12 +51,8 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
           assortment: {
             id: productItem.assortment.id,
             name: productItem.assortment.name,
-            description: productItem.assortment.description,
-            price: productItem.assortment.buyPrice.value / 100,
-            rate:
-              productItem.assortment.attributes?.find(
-                (item: any) => item.name === "rate"
-              )?.value || 5,
+
+            rate: 5,
           },
         };
       }),

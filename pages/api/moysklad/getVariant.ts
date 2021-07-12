@@ -38,12 +38,18 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
   const { idProduct } = req.query;
 
   const response = await ms.GET(
-    "entity/variant",
-    Object.assign({}, requestBody, { expand: "images", limit: 100 })
+    "entity/assortment",
+    Object.assign({}, requestBody, {
+      expand: "images",
+      limit: 100,
+      filter: {
+        type: "variant",
+      },
+    })
   );
 
   let variants: Array<Variants> = [];
-
+  
   response.rows.forEach((item: any, index: number) => {
     if (
       item.product.meta.href ===
@@ -53,7 +59,7 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
         id: item.id,
         name: item.name,
         description: item.description,
-        quantity: 1,
+        quantity: item.quantity,
         productHref: item.product.meta.href,
         price:
           item.salePrices.reduce(

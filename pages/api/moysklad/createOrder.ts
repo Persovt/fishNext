@@ -19,6 +19,9 @@ interface Request extends NextApiRequest {
 interface ServerResponse {
   data: any;
 }
+/*
+todo: create Order delete MAPPPPPP
+ */
 export default async (req: Request, res: NextApiResponse<Data>) => {
   const { cartProducts, authData } = req.body;
   console.log(cartProducts, authData, "cartProducts");
@@ -45,13 +48,15 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
         price: item.price * 100,
         assortment: {
           meta: {
-            href: item.productHref,
-            type: "product",
+            href:
+              "https://online.moysklad.ru/api/remap/1.2/entity/variant/" +
+              item.id,
+            type: "variant",
           },
         },
       };
     }),
   });
-  console.log(response);
+
   res.status(200).json({ success: true, data: response });
 };

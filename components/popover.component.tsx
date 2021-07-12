@@ -4,13 +4,17 @@ import React from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Skeleton, Space, Divider, Switch, Form, Radio } from "antd";
 import axios from "axios";
-
+import { useSelector, useDispatch } from "react-redux";
+import { cartOrderList, deleteCartOrder } from "../redux/slices/orderSlice";
+import ChangeOrder from "../components/changeOrder/changeOrder.module";
 const text = <span style={{ margin: "0 auto" }}>Корзина</span>;
-const Content = ({ cartProducts, onDeleteCartProduct, authData }: any) => {
-  console.log(authData, "authData12");
+const Content = ({ authData }: any) => {
+  const cartProducts = useSelector(cartOrderList);
+  const dispatch = useDispatch();
+  console.log(cartProducts, "cartProducts");
   const createOrder = (cartProducts: Array<Object>, authData: Object) => {
-    console.log(cartProducts, authData, 'HEELLLOO!!!');
- 
+    console.log(cartProducts, authData, "HEELLLOO!!!");
+
     axios("http://localhost:3000/api/moysklad/createOrder", {
       method: "POST",
       data: {
@@ -33,17 +37,24 @@ const Content = ({ cartProducts, onDeleteCartProduct, authData }: any) => {
                   style={{ width: "100%", height: "100%" }}
                 />
               ) : (
-                <Skeleton.Avatar />
+                <Skeleton.Avatar className="cartList__skeletonAvatar" />
               )}
             </div>
             <div className="cartList__information">
               <span className="cartList__name">{item.name}</span>
             </div>
             <div className="cartList__right" style={{ display: "flex" }}>
-              <div className="cartList__price">{item.price}₽</div>
+              <div className="cartList__price">
+                {item.price}₽ <span>x{item.quantity}</span>{" "}
+              </div>
               <div className="cartList__action">
                 <div className="cartList__action-item">
-                  <DeleteOutlined onClick={() => onDeleteCartProduct(index)} />
+                  <DeleteOutlined
+                    onClick={() => {
+                      dispatch(deleteCartOrder({id: item.id}));
+                      //onDeleteCartProduct(index)
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -64,6 +75,13 @@ const Content = ({ cartProducts, onDeleteCartProduct, authData }: any) => {
       />
       <hr />
       <div className="popOver__footer">
+        <div className="popOver__orderPrice">
+          Итого:{" "}
+          {cartProducts.reduce(
+            (acc: number, item: { price: number }) => acc + item.price,
+            0
+          )}
+        </div>
         <Button
           disabled={!cartProducts.length}
           onClick={() => createOrder(cartProducts, authData)}

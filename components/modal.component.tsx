@@ -13,37 +13,18 @@ import {
 } from "antd";
 import { Skeleton } from "antd";
 import axios from "axios";
-
-const { TextArea } = Input;
-const data = [
-  {
-    title: "Ant Design Title 1",
-  },
-  {
-    title: "Ant Design Title 2",
-  },
-  {
-    title: "Ant Design Title 3",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-];
+import { InputNumber } from "antd";
+import ChangeOrderModule from "../components/changeOrder/changeOrder.module";
 
 interface modal {
   isModalVisible: boolean;
   setIsModalVisible: Function;
   currentCard: any;
-  addProductCart: Function;
 }
 const modal = ({
   isModalVisible,
   setIsModalVisible,
   currentCard,
-  addProductCart,
 }: modal): ReactElement => {
   const [openMoreComment, setOpenMoreComment] = useState<boolean>(false);
   const [currectIndexProduct, setCurrectIndexProduct] = useState<number>(0);
@@ -55,17 +36,16 @@ const modal = ({
 
   const closeCart = (
     setIsModalVisible: Function,
-    setAllVariant: Function,
-    setCurrectOffer: Function,
+
     setCurrectIndexProduct: Function
   ) => {
     setIsModalVisible(false);
-    setAllVariant([]);
-    setCurrectOffer({});
+
     setCurrectIndexProduct(0);
   };
 
   React.useEffect(() => {
+    setAllVariant([]);
     if (currentCard.id) {
       fetch(
         "http://localhost:3000/api/moysklad/getVariant?idProduct=" +
@@ -77,10 +57,10 @@ const modal = ({
           if (variants.data.variants.length)
             setCurrectOffer(variants.data.variants[currectIndexProduct]);
           setComments(variants.data.comment);
+          console.log("123", variants);
         });
-      console.log(currectOffer, "currectOffer");
     }
-  }, currentCard.id);
+  }, [currentCard.id]);
   // React.useEffect(() => {
   //   setCurrectIndexProduct(0);
 
@@ -88,10 +68,7 @@ const modal = ({
   //     setCurrectOffer(currentCard?.offers[0]);
   //   }
   // }, [currentCard.offers]);
-  console.log(
-    allVariant,
-    "allVariantallVariantallVariantallVariantallVariantallVariant"
-  );
+  console.log(currectIndexProduct, "currectIndexProduct");
   if (currectOffer.id)
     return (
       <>
@@ -114,31 +91,19 @@ const modal = ({
           // title="<Rate allowHalf defaultValue={2.5} />"
           visible={isModalVisible}
           onOk={() => {
-            addProductCart(currectOffer);
-            closeCart(
-              setIsModalVisible,
-              setAllVariant,
-              setCurrectOffer,
-              setCurrectIndexProduct
-            );
+            closeCart(setIsModalVisible, setCurrectIndexProduct);
           }}
           cancelButtonProps={{ style: { display: "none" } }}
-          onCancel={() =>
-            closeCart(
-              setIsModalVisible,
-              setAllVariant,
-              setCurrectOffer,
-              setCurrectIndexProduct
-            )
-          }
-          okText="Добавить в карзину"
+          onCancel={() => closeCart(setIsModalVisible, setCurrectIndexProduct)}
+          footer={null}
+          // okText="Добавить в карзину"
           cancelText="Отменить"
           className="cardModal"
           // cancelButtonProps={{ style: { display: "none" } }}
         >
           <div className="modal">
             {currectOffer.images.length ? (
-              <Carousel autoplay>
+              <Carousel autoplay className="modal__corousel">
                 {currectOffer.images.map((item: any, index: number) => (
                   <div className="modal__img" key={item}>
                     <img alt="example" src={item} />
@@ -161,9 +126,23 @@ const modal = ({
                 {currectOffer.description}
               </div>
               <div className="modal__select-type">
-                {/*
-                todo: При выборе другой карты id radio остается старым FIIIIX
-                 */}
+                {/* <List
+                  bordered
+                  dataSource={allVariant}
+                  renderItem={(item: any) => (
+                    <List.Item className="modal__list-item">
+                      <div className="modal__variantLeft">
+                        <span className="modal__variantName">{item.name}</span>
+                      </div>
+                      <div className="modal__variantRight">
+                        <span className="modal__variantQuantity">
+                          Осталось: {item.quantity}
+                        </span>
+                        <ChangeOrderModule item={item} />
+                      </div>
+                    </List.Item>
+                  )}
+                /> */}
                 <Radio.Group
                   defaultValue={0}
                   value={currectIndexProduct}
@@ -177,15 +156,28 @@ const modal = ({
                     setCurrectOffer(allVariant[e.target.value]);
                   }}
                 >
-                  {allVariant.map((item: any, index: number) => (
-                    <Radio.Button
-                      style={{ height: "auto" }}
-                      value={index}
-                      key={item.id}
-                    >
-                      {item.name}
-                    </Radio.Button>
-                  ))}
+                  {allVariant.length &&
+                    allVariant.map((item: any, index: number) => (
+                      <Radio.Button
+                        style={{ height: "auto" }}
+                        value={index}
+                        key={item.id}
+                      >
+                        <div className="modal__list-item">
+                          <div className="modal__variantLeft">
+                            <span className="modal__variantName">
+                              {item.name}
+                            </span>
+                          </div>
+                          <div className="modal__variantRight">
+                            <span className="modal__variantQuantity">
+                              Осталось: {item.quantity}
+                            </span>
+                            <ChangeOrderModule item={item} />
+                          </div>
+                        </div>
+                      </Radio.Button>
+                    ))}
                 </Radio.Group>
               </div>
               <div className="modal__comment">
@@ -206,7 +198,7 @@ const modal = ({
                         }
                         title={
                           <>
-                           <span>{item.title}</span>
+                            <span>{item.title}</span>
                             <Rate
                               disabled
                               allowHalf

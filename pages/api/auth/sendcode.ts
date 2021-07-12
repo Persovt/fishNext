@@ -27,11 +27,13 @@ interface Request extends NextApiRequest {
     type: string;
     phone: string;
     email: string;
+    visitorId: string;
   };
 }
 
 export default async (req: Request, res: NextApiResponse<Data>) => {
-  const { phone, email, type } = req.body;
+  const { phone, email, type, visitorId } = req.body;
+  console.log(visitorId)
   console.log(req.body);
   const uuid = uuidv4();
   const code = Math.trunc(Math.random() * 10000);
@@ -46,7 +48,7 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
   });
 
   if (type === "email") {
-    const sendCode = new sendCodeSchema({ id: uuid, email, code, date, type });
+    const sendCode = new sendCodeSchema({ id: uuid, email, code, date, type, visitorId });
 
     let result: any = await transporter.sendMail({
       from: '"FeoFish" <feofish@example.com>',
@@ -61,7 +63,7 @@ export default async (req: Request, res: NextApiResponse<Data>) => {
       .status(200)
       .json({ success: result.accepted.includes(email).length, data: {} });
   } else if (type === "phone") {
-    const sendCode = new sendCodeSchema({ id: uuid, phone, code, date, type });
+    const sendCode = new sendCodeSchema({ id: uuid, phone, code, date, type, visitorId });
     const data = await axios(
       `http://localhost:3000/api/smsaero?randomCode=${code}&inputPhone=${phone}`
     ).then(({ data }) => data.data);

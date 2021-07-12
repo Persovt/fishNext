@@ -13,6 +13,8 @@
 }
 .profile__rightSide {
   width: 100%;
+  height: 100%;
+  overflow-y: scroll;
 }
 .profile__right {
   display: flex;
@@ -37,10 +39,17 @@
 .profile__userInfo {
   /* text-align: left; */
 }
+.profileModal{
+  margin: auto
+}
 .profile {
   display: flex;
+  height: 80vh !important;
 }
 @media (max-width: 768px) {
+  .profileModal{
+    top: 1% !important; 
+  }
   .profile__order {
     flex-direction: column;
   }

@@ -9,6 +9,7 @@ const sendCodeSchema = new Schema({
   code: Number,
   date: Date,
   type: String,
+  visitorId: String,
 });
 export default mongoose.models.sendCodeSchema ||
   mongoose.model("sendCodeSchema", sendCodeSchema);

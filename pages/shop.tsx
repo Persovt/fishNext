@@ -35,7 +35,8 @@ const { SubMenu } = Menu;
 const { Option } = Select;
 const { Header, Content, Sider, Footer } = Layout;
 import LayOut from "../components/layout/layout.component";
-
+import { useSelector, useDispatch } from "react-redux";
+import { cartOrderList } from "../redux/slices/orderSlice";
 //net Shema (
 interface Shop {
   productGroup: any;
@@ -51,6 +52,7 @@ function useIsClient() {
 }
 
 function Shop({ products, productGroup, maxPrice }: Shop) {
+  const cartProducts = useSelector(cartOrderList);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isModalProfileVisible, setIsModalProfileVisible] =
     useState<boolean>(false);
@@ -61,7 +63,6 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
     0,
     maxPrice,
   ]);
-  const [cartProducts, setCartProdcuts] = useState<Array<Object>>([]);
 
   const [currentCard, setCurrentCard] = useState<Object>({});
   const [isModalAuthVisible, setIsModalAuthVisible] = useState<boolean>(false);
@@ -83,15 +84,15 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       },
     }).then(({ data }: any) => setProductsList(data.data.products));
   };
-  const addProductCart = (product: Object) => {
-    setCartProdcuts([product, ...cartProducts]);
-  };
+  // const addProductCart = (product: Object) => {
+  //   setCartProdcuts([product, ...cartProducts]);
+  // };
   const onDeleteCartProduct = (index: number) => {
-    setCartProdcuts(
-      cartProducts.filter(
-        (item: any, indexProduct: number) => index != indexProduct
-      )
-    );
+    // setCartProdcuts(
+    //   cartProducts.filter(
+    //     (item: any, indexProduct: number) => index != indexProduct
+    //   )
+    // );
   };
   console.log(authData, "authDataauthDataauthData");
 
@@ -121,9 +122,11 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       </div>
     </>
   ) : (
-    <div className="menu__item" onClick={() => setIsModalAuthVisible(true)}>
-      <LoginOutlined />
-    </div>
+    <>
+      <div className="menu__item" onClick={() => setIsModalAuthVisible(true)}>
+        <LoginOutlined />
+      </div>
+    </>
   );
   const footer = <div className=""> FeoFish ©2021 Created by Persovt</div>;
   //TEMP ********
@@ -138,7 +141,6 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         currentCard={currentCard}
-        addProductCart={addProductCart}
       />
 
       <AuthModal

@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Rate } from "antd";
-import { Carousel,Skeleton } from "antd";
+import { Carousel, Skeleton } from "antd";
 
 const contentStyle = {
   height: "160px",
@@ -33,18 +33,20 @@ const shopCard = ({
   return (
     <div className="card">
       <Carousel autoplay>
-        {images.length ? images.map((item: any) => (
-          <div className="image">
-            <img alt="example" src={item} />
-          </div>
-        )) : (
-          <div className="image">
-           <Skeleton.Image  style={{
-             width: '100%',
-             height: '100%'
-           }}/>
-          </div>
-        )}
+        <div className="image">
+          {images.length ? (
+            images.map((item: any) => (
+              <img alt="example" src={item} key={item} />
+            ))
+          ) : (
+            <Skeleton.Image
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          )}
+        </div>
       </Carousel>
 
       <div className="card__name">{name}</div>
@@ -65,7 +67,7 @@ const shopCard = ({
           setCurrentCard(content);
         }}
       >
-        Добавить в корзину
+        Купить
       </div>
     </div>
   );

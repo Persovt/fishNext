@@ -59,9 +59,7 @@ const profileModal = ({
   }, [authData.id]);
   return (
     <Modal
-      style={{
-        margin: "auto",
-      }}
+      className={style.profileModal}
       title="Профиль"
       visible={visible}
       onOk={handleOk}
