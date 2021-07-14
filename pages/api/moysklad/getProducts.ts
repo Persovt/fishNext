@@ -4,7 +4,7 @@ import axios from "axios";
 import Moysklad, { Instance } from "moysklad";
 import type { NextApiRequest, NextApiResponse } from "next";
 var urlapi = require("url");
-const ms: any = Moysklad({ token: "1fc2be4c99979988e91573bd0f27a1cb1dacc958" });
+const ms: any = Moysklad({ token: process.env.MOYSKLAD_API_KEY });
 
 type Products = {
   name: String;

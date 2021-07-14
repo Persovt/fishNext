@@ -37,12 +37,17 @@ const { Header, Content, Sider, Footer } = Layout;
 import LayOut from "../components/layout/layout.component";
 import { useSelector, useDispatch } from "react-redux";
 import { cartOrderList } from "../redux/slices/orderSlice";
+import { setAuthData } from "../redux/slices/authSlice";
 //net Shema (
+import AuthHook from "../hooks/auth.hook";
+import Cookies from "universal-cookie";
+import doesHttpOnlyCookieExist from '../utils/doesHttpOnlyCookieExist'
 interface Shop {
   productGroup: any;
   products: any;
   maxPrice: number;
 }
+
 function useIsClient() {
   const [isClient, setIsClient] = React.useState(false);
   // The following effect will be ignored on server,
@@ -50,15 +55,25 @@ function useIsClient() {
   useEffect(() => setIsClient(true), []);
   return isClient;
 }
-
+// async function validateToken(setAuthData: Function, setAuthStatus: Function) {
+//   axios("http://localhost:3000/api/auth/validateToken").then(
+//     ({ data }: any) => {
+//       console.log(data);
+//       if (data.succes) {
+//         setAuthData(data.data);
+//       }
+//       setAuthStatus(data.succes);
+//     }
+//   );
+// }
 function Shop({ products, productGroup, maxPrice }: Shop) {
   const cartProducts = useSelector(cartOrderList);
+  const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isModalProfileVisible, setIsModalProfileVisible] =
     useState<boolean>(false);
   const [productsList, setProductsList] = useState<any>(products);
-  const [authData, setAuthData] = useState<Object>({});
-  const [authStatus, setAuthStatus] = useState<boolean>(false);
+  
   const [filterPrice, setFilterPrice] = useState<[number, number]>([
     0,
     maxPrice,
@@ -67,12 +82,20 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
   const [currentCard, setCurrentCard] = useState<Object>({});
   const [isModalAuthVisible, setIsModalAuthVisible] = useState<boolean>(false);
   const [selectCategories, setSelectCategories] = useState<Array<string>>([]);
+  const { validateAuthToken, refreshAuthToken, logout, authStatus } = AuthHook();
+  useEffect(() => {
+    if (doesHttpOnlyCookieExist("accesToken")) {
+      validateAuthToken();
+    } else if (doesHttpOnlyCookieExist("refreshToken")) {
+      refreshAuthToken();
+    }
+  }, []);
   const isClient = useIsClient();
   const applyFilter = (
     filterPrice: [number, number],
     selectCategories: Array<string>
   ): void => {
-    console.log(filterPrice, selectCategories, "appleFilter");
+   
     axios("http://localhost:3000/api/moysklad/getProducts", {
       method: "POST",
       data: {
@@ -84,19 +107,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       },
     }).then(({ data }: any) => setProductsList(data.data.products));
   };
-  // const addProductCart = (product: Object) => {
-  //   setCartProdcuts([product, ...cartProducts]);
-  // };
-  const onDeleteCartProduct = (index: number) => {
-    // setCartProdcuts(
-    //   cartProducts.filter(
-    //     (item: any, indexProduct: number) => index != indexProduct
-    //   )
-    // );
-  };
-  console.log(authData, "authDataauthDataauthData");
-
-  //TEMP ********
+  
   const header = authStatus ? (
     <>
       <div
@@ -109,15 +120,14 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       <div className="menu__item">
         <PopOver
           cartProducts={cartProducts}
-          onDeleteCartProduct={onDeleteCartProduct}
-          authData={authData}
+         
         >
           <Badge count={cartProducts.length} offset={[10, -10]}>
             <ShoppingCartOutlined />
           </Badge>
         </PopOver>
       </div>
-      <div className="menu__item" onClick={() => setAuthStatus(false)}>
+      <div className="menu__item" onClick={() => logout()}>
         <LogoutOutlined />
       </div>
     </>
@@ -133,7 +143,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
   return (
     <div className="">
       <ProfileModal
-        authData={authData}
+        // authData={authData}
         visible={isModalProfileVisible}
         setIsModalProfileVisible={setIsModalProfileVisible}
       />
@@ -144,8 +154,8 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       />
 
       <AuthModal
-        setAuthData={setAuthData}
-        setAuthStatus={setAuthStatus}
+        // setAuthData={setAuthData}
+        // setAuthStatus={setAuthStatus}
         setIsModalAuthVisible={setIsModalAuthVisible}
         visible={isModalAuthVisible}
       />

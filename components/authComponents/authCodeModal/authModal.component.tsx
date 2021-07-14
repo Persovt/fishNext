@@ -21,16 +21,16 @@ import axios from "axios";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { MailOutlined, PhoneOutlined } from "@ant-design/icons";
 type Auth = {
-  setAuthStatus: Function;
+  // setAuthStatus: Function;
   setIsModalAuthVisible: Function;
   visible: boolean;
-  setAuthData: Function;
+  // setAuthData: Function;
 };
 const Auth = ({
-  setAuthStatus,
+  // setAuthStatus,
   setIsModalAuthVisible,
   visible,
-  setAuthData,
+  // setAuthData,
 }: Auth) => {
   const [disabelForm, setDisabelForm] = useState<boolean>(true);
   const [modalTitle, setModalTitle] = useState<string | any>("Авторизация");
@@ -181,8 +181,8 @@ const Auth = ({
         ) : (
           <AuthCodeComponent
             closeModal={closeModal}
-            setAuthStatus={setAuthStatus}
-            setAuthData={setAuthData}
+            // setAuthStatus={setAuthStatus}
+            // setAuthData={setAuthData}
             data={inputAdresCode}
           />
         )}

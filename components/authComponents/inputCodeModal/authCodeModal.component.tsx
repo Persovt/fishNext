@@ -17,18 +17,20 @@ import InputCode from "../inputCode/inputCode.component";
 import InputPhone from "../inputPhone/inputPhone.component";
 import axios from "axios";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import AuthHook from "../../../hooks/auth.hook";
 type Auth = {
-  setAuthStatus: Function;
+  // setAuthStatus: Function;
   data: {
     type: string;
     value: string;
   };
   closeModal: Function;
-  setAuthData: Function;
+  // setAuthData: Function;
 };
-const AuthCode = ({ setAuthStatus, data, closeModal, setAuthData }: Auth) => {
+const AuthCode = ({ data, closeModal }: Auth) => {
   const [disabelForm, setDisabelForm] = useState<boolean>(true);
   const [inputAuthCode, setInputAuthCode] = useState<string>("");
+  const { auth } = AuthHook();
   const fpPromise = FingerprintJS.load();
   const checkCode = async () => {
     const fp = await fpPromise;
@@ -36,17 +38,22 @@ const AuthCode = ({ setAuthStatus, data, closeModal, setAuthData }: Auth) => {
 
     setInputAuthCode("");
     closeModal();
-    axios("http://localhost:3000/api/auth/auth", {
-      method: "POST",
-      data: {
-        [data.type]: data.value,
-        code: inputAuthCode,
-        visitorId: result.visitorId,
-      },
-    }).then(({ data }: any) => {
-      setAuthStatus(data.succes);
-      setAuthData(data.data);
+    auth({
+      data,
+      inputAuthCode,
+      visitorId: result.visitorId
     });
+    // axios("http://localhost:3000/api/auth/auth", {
+    //   method: "POST",
+    //   data: {
+    //     [data.type]: data.value,
+    //     code: inputAuthCode,
+    //     visitorId: result.visitorId,
+    //   },
+    // }).then(({ data }: any) => {
+    //   setAuthStatus(data.succes);
+    //   setAuthData(data.data);
+    // });
   };
   return (
     <>

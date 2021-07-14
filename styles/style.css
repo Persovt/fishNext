@@ -30,9 +30,37 @@ body {
   margin: 16px 24px 16px 0;
   background: rgba(255, 255, 255, 0.3);
 }
-.cartList__skeletonAvatar{
+.profile__headerPay{
+  margin-left: 25px;
+}
+.cartList__skeletonAvatar {
   width: 100% !important;
   height: 100% !important;
+}
+.profile__headerRight {
+  display: flex;
+  align-items: center;
+}
+.profile__panelRate {
+  margin-left: 25px;
+}
+.profile__panel {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5%;
+}
+.profile__panelLeft {
+  display: flex;
+  align-items: center;
+}
+.profile__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+}
+.profile__panelPrice {
+  font-size: 1.5em;
 }
 .order__addCartButton {
   margin: 0 20px;

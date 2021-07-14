@@ -12,12 +12,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Collapse } from "antd";
 import style from "./profileModal.module.css";
+import AuthHook from "../../hooks/auth.hook";
 const { Panel } = Collapse;
 
 interface profileModal {
   visible: boolean;
   setIsModalProfileVisible: Function;
-  authData: any;
+  //authData: any;
 }
 const data = [
   "Racing car sprays burning fuel into crowd.",
@@ -30,13 +31,14 @@ const data = [
 const profileModal = ({
   setIsModalProfileVisible,
   visible,
-  authData,
-}: profileModal) => {
+}: // authData,
+profileModal) => {
   const [orderList, setOrderList] = useState([]);
+  const { authData } = AuthHook();
   const handleOk = () => {
     setIsModalProfileVisible(false);
   };
-
+  console.log(orderList, "orderList");
   const handleCancel = () => {
     setIsModalProfileVisible(false);
   };
@@ -91,12 +93,52 @@ const profileModal = ({
           </div>
         </div>
         <div className={style.profile__rightSide}>
-          <Collapse defaultActiveKey={["1"]}>
+          <Collapse defaultActiveKey={[1]}>
             {orderList.map((item: any, index: number) => {
-              const header = <div className="">I header :3</div>;
+              const header = (
+                <div className="profile__header">
+                  <div className="profile__headerLeft">
+                    Номер заказа: {item.orderName}
+                  </div>
+                  <div
+                    className="profile__headerRight"
+                    style={{ color: item.status.color }}
+                  >
+                    <div className="profile__headerStatus">
+                    {item.status.name}
+                    </div>
+                   <div className="profile__headerPay">
+                     <Button>Оплатить</Button>
+                   </div>
+                  </div>
+                </div>
+              );
               return (
                 <Panel header={header} key={index}>
-                  <p>123</p>
+                  {item.products.map((item: any) => {
+                    console.log(item);
+                    return (
+                      <div className="profile__panel">
+                        <div className="profile__panelLeft">
+                          <div className="profile__panelName">
+                            {item.assortment.name}
+                          </div>
+                          <Rate
+                          className="profile__panelRate"
+                            disabled
+                            allowHalf
+                            defaultValue={item.assortment.rate}
+                          />
+                        </div>
+                        <div className="profile__panelRight">
+                          <div className="profile__panelPrice">
+                            {item.price}₽ <span>x{item.quantity}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    );
+                  })}
                 </Panel>
               );
             })}

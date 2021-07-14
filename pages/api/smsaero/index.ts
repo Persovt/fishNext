@@ -12,8 +12,8 @@ interface Request extends NextApiRequest {
   };
 }
 
-const API_KEY = "DFzMxO61tvbPDrZTsRPeVXIrBJbq";
-const EMAIL = "mza200339@gmail.com";
+const API_KEY = process.env.SMSAERO_API_KEY;
+const EMAIL = process.env.SMSAERO_API_EMAIL;
 
 interface ServerResponse {
   data: any;

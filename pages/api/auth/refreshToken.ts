@@ -33,49 +33,25 @@ export default async (req: Request, res: NextApiResponse<any>) => {
   const { phone, code, email, visitorId } = req.body;
   const cookies = new Cookies(req, res);
   const JWT_SECRET_KEY: string = process.env.JWT_SECRET_KEY || "jss";
-  const response = await ms.GET("entity/counterparty", {
-    filter: {
-      phone,
-      email,
-    },
+  const oldRefreshToken = cookies.get("refreshToken");
+  let authData = null;
+  const refreshTokenFind: any = RefreshModel.find({
+    refreshToken: oldRefreshToken,
   });
-  console.log(response.meta.size);
-  let authData: any = {};
-
-  // const checkCode = 1;
-  const checkCode = await sendCodeSchema.findOneAndDelete({
-    phone,
-    email,
-    code,
-    visitorId,
-  });
-  if (checkCode) {
-    const date = new Date();
-
-    if (response.meta.size) authData = response.rows[0];
-    else {
-      authData = await ms.POST(
-        "entity/counterparty",
-        {
-          name: "Новый пользователь",
-          phone,
-          email,
-        },
-        { expand: "meta", limit: 100 }
-      );
-    }
-    const userAuth = new authModelSchema({
-      phone,
-      email,
-      visitorId,
-      date,
+  if (refreshTokenFind) {
+    const userResponse = await ms.GET("entity/counterparty", {
+      filter: {
+        id: refreshTokenFind.userId,
+      },
     });
-    await userAuth.save();
-    const refreshToken: string = uuidv4();
+
+    if (userResponse.meta.size) authData = userResponse.rows[0];
+
+    const newRefreshToken: string = uuidv4();
 
     const refreshTokenShema = new RefreshModel({
       userId: authData.id,
-      refreshToken: refreshToken,
+      refreshToken: newRefreshToken,
       fingerprint: visitorId,
       expiresIn: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
       createdAt: new Date().getTime(),
@@ -99,20 +75,13 @@ export default async (req: Request, res: NextApiResponse<any>) => {
     await cookies.set("accesToken", accesToken, {
       maxAge: 30 * 60 * 1000,
     });
-    await cookies.set("refreshToken", refreshToken, {
+    await cookies.set("refreshToken", newRefreshToken, {
       maxAge: 60 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
   }
 
   res.status(200).json({
-    succes: Boolean(checkCode),
-    data: {
-      id: authData.id,
-      name: authData.name,
-      phone: authData.phone,
-      email: authData.email,
-      actualAddress: authData.actualAddress,
-    },
+    succes: Boolean(authData),
   });
 };
