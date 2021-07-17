@@ -30,8 +30,8 @@ const Auth = ({
   // setAuthStatus,
   setIsModalAuthVisible,
   visible,
-  // setAuthData,
-}: Auth) => {
+}: // setAuthData,
+Auth) => {
   const [disabelForm, setDisabelForm] = useState<boolean>(true);
   const [modalTitle, setModalTitle] = useState<string | any>("Авторизация");
   const [authType, setAuthType] = useState<string>("mail");
@@ -66,23 +66,14 @@ const Auth = ({
     const fp = await fpPromise;
     const result = await fp.get();
 
-    console.log(inputAdresCode);
     axios("http://localhost:3000/api/auth/sendcode", {
       method: "POST",
       data: {
         [inputAdresCode.type]: inputAdresCode.value,
         type: inputAdresCode.type,
-        visitorId: result.visitorId
+        visitorId: result.visitorId,
       },
-    }).then(({ data }) => console.log(data, "sendCode"));
-
-    axios("http://localhost:3000/api/auth/auth", {
-      method: "POST",
-      data: {
-        [inputAdresCode.type]: inputAdresCode.value,
-        code: authCode,
-      },
-    }).then(({ data }) => console.log(data, "authauthauth"));
+    });
 
     setModalTitle(
       <>

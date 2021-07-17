@@ -16,7 +16,7 @@ export const authSlice = createSlice({
       state.authData = action.payload.authData;
     },
     setAuthStatus: (state: initialStateType, action) => {
-        console.log(action.payload, 'action.payload.status')
+       
       state.status = action.payload.status;
     },
   },

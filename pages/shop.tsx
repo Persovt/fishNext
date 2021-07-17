@@ -41,8 +41,8 @@ import { setAuthData } from "../redux/slices/authSlice";
 //net Shema (
 import AuthHook from "../hooks/auth.hook";
 import Cookies from "universal-cookie";
-import doesHttpOnlyCookieExist from '../utils/doesHttpOnlyCookieExist'
-interface Shop {
+import doesHttpOnlyCookieExist from "../utils/doesHttpOnlyCookieExist";
+interface ShopPropsType {
   productGroup: any;
   products: any;
   maxPrice: number;
@@ -66,14 +66,18 @@ function useIsClient() {
 //     }
 //   );
 // }
-function Shop({ products, productGroup, maxPrice }: Shop) {
+export default function Shop({
+  products,
+  productGroup,
+  maxPrice,
+}: ShopPropsType) {
   const cartProducts = useSelector(cartOrderList);
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isModalProfileVisible, setIsModalProfileVisible] =
     useState<boolean>(false);
   const [productsList, setProductsList] = useState<any>(products);
-  
+
   const [filterPrice, setFilterPrice] = useState<[number, number]>([
     0,
     maxPrice,
@@ -82,7 +86,8 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
   const [currentCard, setCurrentCard] = useState<Object>({});
   const [isModalAuthVisible, setIsModalAuthVisible] = useState<boolean>(false);
   const [selectCategories, setSelectCategories] = useState<Array<string>>([]);
-  const { validateAuthToken, refreshAuthToken, logout, authStatus } = AuthHook();
+  const { validateAuthToken, refreshAuthToken, logout, authStatus } =
+    AuthHook();
   useEffect(() => {
     if (doesHttpOnlyCookieExist("accesToken")) {
       validateAuthToken();
@@ -95,7 +100,6 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
     filterPrice: [number, number],
     selectCategories: Array<string>
   ): void => {
-   
     axios("http://localhost:3000/api/moysklad/getProducts", {
       method: "POST",
       data: {
@@ -107,7 +111,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       },
     }).then(({ data }: any) => setProductsList(data.data.products));
   };
-  
+
   const header = authStatus ? (
     <>
       <div
@@ -118,10 +122,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
       </div>
 
       <div className="menu__item">
-        <PopOver
-          cartProducts={cartProducts}
-         
-        >
+        <PopOver cartProducts={cartProducts}>
           <Badge count={cartProducts.length} offset={[10, -10]}>
             <ShoppingCartOutlined />
           </Badge>
@@ -142,23 +143,29 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
   //TEMP ********
   return (
     <div className="">
-      <ProfileModal
-        // authData={authData}
-        visible={isModalProfileVisible}
-        setIsModalProfileVisible={setIsModalProfileVisible}
-      />
-      <ProductModal
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        currentCard={currentCard}
-      />
+      {isModalProfileVisible && (
+        <ProfileModal
+          // authData={authData}
+          visible={isModalProfileVisible}
+          setIsModalProfileVisible={setIsModalProfileVisible}
+        />
+      )}
+      {isModalVisible && (
+        <ProductModal
+          isModalVisible={isModalVisible}
+          setIsModalVisible={setIsModalVisible}
+          currentCard={currentCard}
+        />
+      )}
 
-      <AuthModal
-        // setAuthData={setAuthData}
-        // setAuthStatus={setAuthStatus}
-        setIsModalAuthVisible={setIsModalAuthVisible}
-        visible={isModalAuthVisible}
-      />
+      {isModalAuthVisible && (
+        <AuthModal
+          // setAuthData={setAuthData}
+          // setAuthStatus={setAuthStatus}
+          setIsModalAuthVisible={setIsModalAuthVisible}
+          visible={isModalAuthVisible}
+        />
+      )}
 
       <LayOut header={header} footer={footer}>
         <Sider width={300} className="site-layout-background">
@@ -259,16 +266,7 @@ function Shop({ products, productGroup, maxPrice }: Shop) {
     </div>
   );
 }
-export async function getStaticProps() {
-  // const data = await Promise.all([
-  //   fetch(
-  //     "https://fancrm.retailcrm.ru/api/v5/store/products?apiKey=wEdfH8sQ8VyugnjbuGPfDhKyhfjBINz8"
-  //   ).then((res) => res.json()),
-  //   fetch(
-  //     "https://fancrm.retailcrm.ru/api/v5/store/product-groups?apiKey=wEdfH8sQ8VyugnjbuGPfDhKyhfjBINz8"
-  //   ).then((res) => res.json()),
-  // ]);
-
+export async function getServerSideProps() {
   const data: any = await Promise.all([
     axios("http://localhost:3000/api/moysklad/getProducts").then(
       ({ data }) => data.data
@@ -280,24 +278,12 @@ export async function getStaticProps() {
 
   const [products, productGroup]: any = data;
 
-  // // const data2 = await fetch(
-  // //   "https://fancrm.retailcrm.ru/api/v5/store/products?apiKey=wEdfH8sQ8VyugnjbuGPfDhKyhfjBINz8"
-  // // ).then(res=>res.json())
-
-  // if (!products || !productGroup) {
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
-
   return {
     props: {
-      products: products.products,
+      products: products.products || [],
       productGroup: productGroup,
 
-      maxPrice: products.maxPrice,
+      maxPrice: products.maxPrice || 9999,
     }, // will be passed to the page component as props
   };
 }
-
-export default Shop;
