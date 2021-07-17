@@ -5,7 +5,7 @@ import { setAuthStatus, setAuthData } from "../redux/slices/authSlice";
 const authHook = () => {
   const authData = useSelector((state: any) => state.auth.authData);
   const authStatus = useSelector((state: any) => state.auth.status);
-  console.log(authStatus, authData)
+ 
   const dispatch = useDispatch();
   const validateAuthToken = () => {
     axios("http://localhost:3000/api/auth/validateToken").then(

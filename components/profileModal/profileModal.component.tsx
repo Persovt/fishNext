@@ -46,7 +46,7 @@ profileModal) => {
     console.log(value, id);
   };
   useEffect(() => {
-    console.log(authData);
+    console.log(authData, 'authDataauthData');
     if (authData.id) {
       axios("http://localhost:3000/api/moysklad/getOrders", {
         method: "POST",
@@ -95,6 +95,7 @@ profileModal) => {
         <div className={style.profile__rightSide}>
           <Collapse defaultActiveKey={[1]}>
             {orderList.map((item: any, index: number) => {
+             
               const header = (
                 <div className="profile__header">
                   <div className="profile__headerLeft">
@@ -114,11 +115,11 @@ profileModal) => {
                 </div>
               );
               return (
-                <Panel header={header} key={index}>
+                <Panel header={header} key={item.id}>
                   {item.products.map((item: any) => {
-                    console.log(item);
+                    
                     return (
-                      <div className="profile__panel">
+                      <div className="profile__panel" key={item.id}>
                         <div className="profile__panelLeft">
                           <div className="profile__panelName">
                             {item.assortment.name}
